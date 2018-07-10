@@ -1,0 +1,191 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun 27 18:59:25 2018
+
+@author: Chris
+"""
+#%%
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.cm as cmap
+
+#%% function to plot lines colored by a third 1xn color array 
+#plots each line segment as a different color depending on it's value as percentage of 'maxC'
+def plot_coloredline(x,y,c,maxC):
+    #solution to slowdown
+    c = cmap.jet(c/maxC)
+    ax = plt.gca()
+    for i in np.arange(len(x)-1):
+        ax.plot([x[i],x[i+1]],[y[i],y[i+1]],c=c[i],linewidth=2)
+    return
+
+#convert cell col,row to X,Y
+def colrow2XY(col,row,delx,dely):
+    XY=np.zeros(2)
+    XY[0]=(col+.5)*delx
+    XY[1]=(row+.5)*dely
+    return XY
+
+#convert X,Y to cell col,row
+def XY2colrow(X,Y,delx,dely):
+    colrow=np.zeros(2).astype(int)
+    colrow[0]=np.int(np.floor(X/delx))
+    colrow[1]=np.int(np.floor(Y/dely))
+    return colrow
+
+def track_particles(particlesXY,qx,qy,xmax,ymax,delx,dely,maxLoops,maxTime,amplifier):
+
+    #calculate the maximum allowable time per step
+    maxtimePerStep=maxTime/(maxLoops)*amplifier
+    #Calculate from particles XY array to see how many particles were assigned by user 'numParts'
+    numParts=np.arange(0,particlesXY.shape[0])
+    
+    #initialize the output array (+1 because the initial position is stored, too)
+    XYT=np.zeros((maxLoops+1,3,particlesXY.shape[0]));
+    
+    #loop through part track to see where each particle goes
+    for partNum in numParts:#loop through all the particles and calculae tracks
+        startX=particlesXY[partNum,0];#this is the start X location of the current particle
+        startY=particlesXY[partNum,1];#this is the start Y location of the current particle
+        XYT[:,:,partNum]=particle_track(startX,startY,qx,qy,xmax,ymax,delx,dely,maxLoops,maxTime,maxtimePerStep)
+    
+    return XYT
+
+def particle_track(partX,partY,qx,qy,xmax,ymax,delx,dely,maxLoops,maxTime,maxtimePerStep):
+    xmin=0 #always zero, but made as v ars for clarity's sake
+    ymin=0 #always zero, but made as v ars for clarity's sake
+
+    partXYT=np.nan*np.zeros((maxLoops+1,3));       
+
+    partStepCounter=0 #initialize the step#       
+    inRange=True; #particle is in bounds
+
+    partTimer=0 #initialize the time
+    partXYT[partStepCounter,:]=[partX,partY,partTimer]; #store the first timestep into the output array
+    
+    while inRange: #loop through time steps until this particle has left domain or time has run out
+    
+        partStepCounter=partStepCounter+1 #increment counter
+        
+        ij=XY2colrow(partX,partY,delx,dely)#cell col and row
+        
+        thisqx=qx[ij[1],ij[0]]    #grab the qx for the current cell
+        thisqy=qy[ij[1],ij[0]]    #grab the qy for the current cell
+        
+        #calculate how long it would take to hit the column edge along it's current trajectory 'timex'
+        if thisqx>=0: #it's moving right
+            timex=(((ij[0]+1)*delx)-partX)/abs(thisqx)
+        else: #it's moving left
+            timex=(partX-((ij[0])*delx))/abs(thisqx)
+        #calculate how long it would take to hit the row edge along it's current trajectory 'timex'    
+        if thisqy>=0: #it's moving 'up'
+            timey=(((ij[1]+1)*dely)-partY)/abs(thisqy)
+        else: #it's moving 'down;
+            timey=(partY-((ij[1])*dely))/abs(thisqy)
+            
+        if maxtimePerStep<timex and maxtimePerStep<timey: #max time per step was exceeded, so move the particle as far as it can move in that amount of time 
+            #this 'if' was added so that extra line segments would be generated for better looking plots
+            partX=partX+maxtimePerStep*thisqx #calc new X
+            partY=partY+maxtimePerStep*thisqy #calc new Y
+            partTimer=partTimer+maxtimePerStep #calc new time
+        else:
+            mult=1.1 #multiplier to try to keep points from disappearing between converging flowpaths and instead overoscillate. Makes the particle flow past edge of cell a little bit on each loop.
+            divisor=25 #used to make sure particles actually move somewhere in a given step
+            if timex<timey:#if it hits the column edge before it would have hit the row edge
+                if timex<maxtimePerStep/divisor:#if time allowed for moving is too short, then the particle is stuck at cell edge
+                    timex=maxtimePerStep/divisor #so, give it more time to move
+                partX=partX+(timex*thisqx*mult) #calc X and make it move for longer than it would take to get to the cell edge, so it overshoots a tad and doesn't get caught
+                partY=partY+(timex*thisqy*mult) #calc Y and make it move for longer than it would take to get to the cell edge, so it overshoots a tad and doesn't get caught
+                partTimer=partTimer+timex*mult # calculate new time
+            else: #timey<timex #if it hits the row edge before it would have hit the column edge
+                if timey<maxtimePerStep/divisor: #if time allowed for moving is too short, then the particle is stuck at cell edge
+                    timey=maxtimePerStep/divisor #if so, give it more time to move
+                partX=partX+(timey*thisqx*mult) #calc X and make it move for longer than it would take to get to the cell edge, so it overshoots a tad and doesn't get caught
+                partY=partY+(timey*thisqy*mult) #calc Y and make it move for longer than it would take to get to the cell edge, so it overshoots a tad and doesn't get caught
+                partTimer=partTimer+timey*mult # calculate new time
+        
+        #store end X,Y location of the particle in the array
+        partXYT[partStepCounter,:]=[partX,partY,partTimer];
+        
+        #if we've exceeded time or the particle is out of domain, stop looping
+        if partX>=xmax or partX<=xmin or partY<=ymin or partY>=ymax or partTimer>maxTime or partStepCounter==maxLoops:
+            inRange=False #assign false to the while variable
+
+
+    return partXYT
+
+#%% INPUTS - assume these would have all been fed into the function -- so much of code block is unnecessary!!!
+
+ncol=50 #number of rows and columns in domain - defined by function
+nrow=50
+
+xmin=0 #min and max X dimension
+xmax=100
+
+ymin=0 #min/max y dimensions
+ymax=100
+
+#maximum particle run time 
+maxTime=500 #need some auto control on this based on velocities in the domain (mean?, median?, max?)
+#maximum number of allowable loops - this doesn't matter so much for particle tracking as it does for plotting...
+maxLoops=200
+amplifier=3 #give each step extra time, to make up for the steps that will be shorter than maxtime/maxloops
+
+#width/height of each column/row
+delx=(xmax-xmin)/ncol #np.float(1)
+dely=(ymax-ymin)/nrow#np.float(1)
+
+
+
+#random sets of u and v vectors
+#qx=np.random.rand(nrow,ncol) #qx in the flow function
+#qy=np.random.rand(nrow,ncol)-0.5 #qy in the flow function
+
+#%% TEST set of particles
+#put a bunch of particles in and track them...
+#total particles = numPointsX*numPointsY
+#!!!in program, these particles will be placed by user so this code block is unnecessary!!!
+
+numPointsX=3
+numPointsY=3
+Xtemp,Ytemp = np.meshgrid(np.arange(delx/2,xmax,delx*(ncol/numPointsX)),np.arange(dely/2,ymax,dely*(nrow/numPointsY)))
+
+Xtemp,Ytemp = np.meshgrid(np.arange(xmax/(numPointsX*2),xmax,xmax/numPointsX),np.arange(ymax/(numPointsY*2),ymax,ymax/numPointsY))
+
+#this is a nx2 array of the xy startuing points of all the particles
+particlesXY=np.column_stack((Xtemp.flatten(),Ytemp.flatten()))
+
+#%% Main particle tracking code
+
+XYT = track_particles(particlesXY,qx,qy,xmax,ymax,delx,dely,maxLoops,maxTime,amplifier)
+    
+#%% initial plot of quiver and grid
+plt.close('all')
+fig=plt.figure()
+ax = plt.subplot(1, 1, 1)
+
+plt.quiver(np.arange(np.float(delx)/2,np.float(xmax)+np.float(delx)/2,delx),np.arange(np.float(dely)/2,np.float(ymax)+np.float(dely)/2,dely),qx,qy,color=(0.8,0.8,0.8))
+ax.set_xticks(np.arange(xmin,xmax,delx))
+ax.set_yticks(np.arange(ymin,ymax,dely))
+plt.grid(alpha=1)
+plt.xlim(xmin,xmax)
+plt.ylim(ymin,ymax)
+
+#%% plot the particle tracks colored by the elapsed time
+maxTime=np.nanmax(XYT[:,2,:]) #calculate the actual maximum time
+
+numParts=np.arange(0,XYT.shape[2])
+
+for partNum in numParts:
+    print(['plotting line # ', partNum+1, ' of ', numParts[-1]+1])
+    thisXYT = XYT[:,:,partNum]#get just the current particle XYT array
+    plt.plot(thisXYT[0,0],thisXYT[0,1],'og')#start
+    plot_coloredline(thisXYT[:,0],thisXYT[:,1],thisXYT[:,2],maxTime) #plot each segment as a different color using function above, and scale color by the maximum time of any line
+    
+plt.jet() #change default colorshecme to jet
+plt.scatter(np.zeros(2),np.zeros(2),s=0,c=(0,maxTime)) #create a nodraw scatter just for the colorbar and range
+cbar=plt.colorbar() #turn on colorbar (scale is wrong)
+cbar.set_label('days')
+plt.legend(('start','end'))
