@@ -1,0 +1,31 @@
+{
+    "name": "gwm-webpack",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "build": "webpack --config webpack.config.js --mode=production",
+        "build:dev": "webpack --config webpack.config.js --mode=development",
+        "build:dev:watch": "webpack --config webpack.config.js --watch --mode=development"
+    },
+    "keywords": [],
+    "author": "rgnair@syr.edu",
+    "license": "ISC",
+    "dependencies": {
+        "font-awesome": "4.7.0",
+        "mdbootstrap": "4.5.5",
+        "node-waves": "0.7.5",
+        "plotly.js": "1.38.3"
+    },
+    "devDependencies": {
+        "css-loader": "1.0.0",
+        "file-loader": "1.1.11",
+        "mini-css-extract-plugin": "0.4.1",
+        "style-loader": "0.21.0",
+        "url-loader": "1.0.1",
+        "vue-loader": "15.2.4",
+        "vue-template-compiler": "2.5.16",
+        "webpack": "4.15.1",
+        "webpack-cli": "3.0.8"
+    }
+}

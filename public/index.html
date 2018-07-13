@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Groundwater Modelling</title>
+
+        <!-- STYLES -->
+        <!-- bundled vendor stylesheet -->
+        <link rel="stylesheet" type="text/css" href="css/vendor.css">
+        <!-- bundled app stylesheet -->
+        <link rel="stylesheet" type="text/css" href="css/app.css">
+    </head>
+
+    <body class="grey lighten-3">
+        <div id="app" class="flyout">
+            <!--Main Navigation-->
+            <header>
+
+                <!-- Navbar -->
+                <nav class="navbar fixed-top navbar-expand-lg navbar-dark white scrolling-navbar">
+                    <div class="container-fluid">
+
+                        <!-- Brand -->
+                        <a class="navbar-brand waves-effect" href="#" target="_blank">
+                            <strong class="blue-text">Groundwater Modelling</strong>
+                        </a>
+
+                    </div>
+                </nav>
+
+            </header>
+
+            <!--Main layout-->
+            <main class="pt-5 mx-lg-5">
+                <div class="container-fluid mt-5">
+
+                    <!--Grid row-->
+                    <div class="row wow fadeIn">
+
+                        <!--Grid column-->
+                        <div class="col-md-5 mb-4">
+
+                            <!--Card-->
+                            <div class="card mb-4">
+
+                                <!-- Card header -->
+                                <div class="card-header text-center">
+                                    Configure Inputs for Model
+                                    <i class="fa fa-cogs ml-2"></i>
+                                </div>
+
+                                <!--Card content-->
+                                <div class="card-body">
+
+                                    <div id="inputDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!--Grid column-->
+                        <div class="col-md-1 mb-4">
+                        </div>
+
+                        <!--Grid column-->
+                        <div class="col-md-5 mb-4">
+
+                            <!--Card-->
+                            <div class="card mb-4">
+
+                                <!-- Card header -->
+                                <div class="card-header text-center">
+                                    Heads & Flow Vectors (Map View)
+                                </div>
+
+                                <!--Card content-->
+                                <div class="card-body">
+
+                                    <div id="outputDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- <div style="position: absolute; bottom: 10px; z-index: -1000">
+                    <img src="img/GMS_software_3.png" alt="">
+                    <img src="img/whatisgroundwater.png" alt="">
+                </div> -->
+            </main>
+        </div>
+
+        <!-- SCRIPTS -->
+        <!-- bundled vendor js -->
+        <script type="text/javascript" src="js/vendor.js"></script>
+        <!-- bundled app js -->
+        <script src="js/app.js"></script>
+    </body>
+</html>
