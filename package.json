@@ -13,8 +13,11 @@
     "license": "ISC",
     "dependencies": {
         "font-awesome": "4.7.0",
+        "lodash": "4.17.10",
         "mdbootstrap": "4.5.5",
+        "ndarray-gaussian-filter": "1.0.0",
         "node-waves": "0.7.5",
+        "numjs": "0.16.0",
         "plotly.js": "1.38.3"
     },
     "devDependencies": {

@@ -10,11 +10,11 @@ import 'font-awesome/css/font-awesome.min.css';
 /// INPUT PLOT
 ///////////////////////////////////////////////////////////////
 
-import inputData from './plots/input/PlotData';
+import inputPlots from './plots/input/PlotData';
 import inputLayout from './plots/input/LayoutProvider';
 
 const inputDiv = document.getElementById('inputDiv');
-Plotly.newPlot('inputDiv', inputData, inputLayout, {displayModeBar: false});
+Plotly.newPlot('inputDiv', inputPlots, inputLayout, {displayModeBar: false});
 
 inputDiv.on('plotly_selected', (data) => {
     console.log(JSON.stringify(data));
@@ -29,7 +29,11 @@ inputDiv.on('plotly_selected', (data) => {
 /// OUTPUT PLOT
 ///////////////////////////////////////////////////////////////
 
-import outputData from './plots/output/PlotData';
+import createOutputPlots from './plots/output/PlotData';
 import outputLayout from './plots/output/LayoutProvider';
 
-Plotly.newPlot('outputDiv', outputData, outputLayout, {displayModeBar: false});
+createOutputPlots()
+    .then((outputPlots) => {
+        Plotly.newPlot('outputDiv', outputPlots, outputLayout, {displayModeBar: false});
+    })
+    .catch(err => console.error(`Found error: ${err}`));

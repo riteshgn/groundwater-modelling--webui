@@ -106,6 +106,13 @@ module.exports = {
             Plotly: 'plotly.js'
         }),
 
+        // The define plugin allows us to generate a bunch of config entries which can be used
+        // by our application. The entries defined here would be available globally to any module.
+        // ref: https://webpack.js.org/plugins/define-plugin/
+        new webpack.DefinePlugin({
+            ENV_PRODUCTION: true
+        }),
+
         // initialize the css extract plugin which helps pulls css styles into bundles.
         // ref: https://github.com/webpack-contrib/mini-css-extract-plugin
         new MiniCssExtractPlugin({
