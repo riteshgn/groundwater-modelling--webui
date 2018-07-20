@@ -12,12 +12,12 @@
 
 const webpack              = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const VueLoaderPlugin      = require('vue-loader/lib/plugin');
 
 const path = require('path');
 
-//////////////////////////////////////////////////////////////////
-
 module.exports = {
+
     // This is the entrypoint for the webpack module
     // Here we tell webpack that the starting point of our application-specific
     // javascript code is at client/src/app.js
@@ -43,7 +43,8 @@ module.exports = {
         alias: {
             'jquery$': 'mdbootstrap/js/jquery-3.3.1.min.js',
             'popper.js$': 'mdbootstrap/js/popper.min.js',
-            'bootstrap$': 'mdbootstrap/js/bootstrap.min.js'
+            'bootstrap$': 'mdbootstrap/js/bootstrap.min.js',
+            'vue$': 'vue/dist/vue.common.js'
         }
     },
 
@@ -56,10 +57,16 @@ module.exports = {
         // comes out-of-the-box.
         rules: [
 
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+            },
+
             // collect all css styles and bundle them
             {
                 test: /\.css$/,
                 use: [
+                    'vue-style-loader',
                     MiniCssExtractPlugin.loader,
                     'css-loader'
                 ]
@@ -91,6 +98,7 @@ module.exports = {
 
     // --> Additional plugins
     plugins: [
+        new VueLoaderPlugin(),
 
         // When webpack bundles our js code, some of the object (classic example is '$' from jQuery)
         // are encapsulated within function expressions and not accessible anymore.
@@ -110,13 +118,13 @@ module.exports = {
         // by our application. The entries defined here would be available globally to any module.
         // ref: https://webpack.js.org/plugins/define-plugin/
         new webpack.DefinePlugin({
-            ENV_PRODUCTION: true
+            ENV_PRODUCTION: false
         }),
 
         // initialize the css extract plugin which helps pulls css styles into bundles.
         // ref: https://github.com/webpack-contrib/mini-css-extract-plugin
         new MiniCssExtractPlugin({
-            filename: '../css/[name].css'
+           filename: '../css/[name].css'
         })
     ],
     // <-- Additional plugins

@@ -1,39 +1,27 @@
 'use strict';
 
+import Vue from 'vue';
+
 // Import all style sheets
 import 'mdbootstrap/css/bootstrap.min.css';
 import 'mdbootstrap/css/mdb.min.css';
 // Import local fonts library (font-awesome)
 import 'font-awesome/css/font-awesome.min.css';
 
-////////////////////////////////////////////////////////////////
-/// INPUT PLOT
-///////////////////////////////////////////////////////////////
+import Header from './views/header/Header.vue';
+import Main from './views/main/Main.vue';
 
-import inputPlots from './plots/input/PlotData';
-import inputLayout from './plots/input/LayoutProvider';
+import store from './store';
 
-const inputDiv = document.getElementById('inputDiv');
-Plotly.newPlot('inputDiv', inputPlots, inputLayout, {displayModeBar: false});
+new Vue({
+    el: '#app',
 
-inputDiv.on('plotly_selected', (data) => {
-    console.log(JSON.stringify(data));
-    if (data && data.range) {
-        const domainX = data.range.x.map(Math.floor);
-        const domainY = data.range.y.map(Math.floor);
-        alert(`You have selected\n        x from ${domainX[0]} to ${domainX[1]}\n        y from ${domainY[0]} to ${domainY[1]}`);
+    store,
+
+    components: {
+        'app-header': Header,
+        'app-main': Main
     }
 });
 
-////////////////////////////////////////////////////////////////
-/// OUTPUT PLOT
-///////////////////////////////////////////////////////////////
-
-import createOutputPlots from './plots/output/PlotData';
-import outputLayout from './plots/output/LayoutProvider';
-
-createOutputPlots()
-    .then((outputPlots) => {
-        Plotly.newPlot('outputDiv', outputPlots, outputLayout, {displayModeBar: false});
-    })
-    .catch(err => console.error(`Found error: ${err}`));
+////////////////////////////////////////////////////////////////////////////////////////////
