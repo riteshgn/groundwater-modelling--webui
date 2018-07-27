@@ -87,15 +87,33 @@
 
         <!-- Grid row -->
         <div class="form-group row">
+            <div class="col-sm-4">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="plotSelection-value">Value</span>
+                    </div>
+                    <input
+                        type="number"
+                        class="form-control"
+                        v-model.number="plotSelection.value">
+                </div>
+            </div>
+        </div>
+        <!-- Grid row -->
+
+        <!-- Grid row -->
+        <div class="form-group row">
             <div class="col-sm-10">
-                <button
-                    type="button"
-                    class="btn btn-primary waves-effect btn-sm"
-                    @click="saveConfig">Save</button>
-                <button
-                    type="button"
-                    class="btn btn-outline-primary waves-effect btn-sm"
-                    @click="randomize">Randomize</button>
+                <btn
+                    color="primary"
+                    size="sm"
+                    class="waves-effect"
+                    @click.native.prevent="saveConfig">Save</btn>
+                <btn
+                    color="outline-primary"
+                    size="sm"
+                    class="waves-effect"
+                    @click.native.prevent="randomize">Randomize</btn>
             </div>
         </div>
         <!-- Grid row -->
@@ -104,33 +122,36 @@
 
         <div class="table-wrapper-scroll-y">
             <!-- Table  -->
-            <table class="table table-sm btn-table">
+            <tbl sm class="btn-table">
                 <!-- Table head -->
-                <thead class="blue lighten-4">
+                <tbl-head class="blue lighten-4">
                     <tr>
                         <th>#</th>
                         <th>x coords</th>
                         <th>y coords</th>
+                        <th>value</th>
                         <th>Action</th>
                     </tr>
-                </thead>
+                </tbl-head>
                 <!-- Table head -->
 
                 <!-- Table body -->
-                <tbody>
-                    <tr v-for="row in stringifiedWells">
+                <tbl-body>
+                    <tr v-for="row in stringifiedHeads">
                         <th scope="row">{{ row.srNo }}</th>
                         <td><pre>{{ row.x }}</pre></td>
                         <td><pre>{{ row.y }}</pre></td>
+                        <td><pre>{{ row.value }}</pre></td>
                         <td>
-                            <button
-                                type="button"
-                                class="btn btn-primary waves-effect btn-sm m-0"
-                                @click="removeConfig(row.srNo)"> x </button>
+                            <btn
+                                color="primary"
+                                size="sm"
+                                class="m-0"
+                                @click.native.prevent="removeConfig(row.srNo)"> x </btn>
                         </td>
                     </tr>
-                </tbody>
-            </table>
+                </tbl-body>
+            </tbl>
             <!-- Table  -->
         </div>
     </form>
@@ -138,44 +159,61 @@
 </template>
 
 <script>
+
     import { mapGetters, mapMutations } from 'vuex';
+    import { Tbl, TblHead, TblBody, Btn } from 'mdbvue';
 
     import PlotSelection from '../../../../core/PlotSelection';
 
-    const InputConfigHeads = {
+    const ConfigConstantHeads = {
+
         data() {
             return {
                 plotSelection: new PlotSelection()
             };
         },
 
+        components: {
+            Tbl,
+            TblHead,
+            TblBody,
+            Btn
+        },
+
         computed: {
-            ...mapGetters('groundwater', ['stringifiedWells'])
+            ...mapGetters('groundwater', ['stringifiedHeads'])
         },
 
         methods: {
             ...mapMutations({
-                removeConfig: 'groundwater/REMOVE_WELLS_CONFIG'
+                removeConfig: 'groundwater/REMOVE_CONSTANT_HEAD_CONFIG'
             }),
 
             saveConfig() {
-                this.plotSelection.value = -10000;
-                this.$store.commit('groundwater/ADD_WELLS_CONFIG', this.plotSelection.clone());
+                this.$store.commit('groundwater/ADD_CONSTANT_HEAD_CONFIG', this.plotSelection.clone());
                 this.plotSelection.reset();
             },
 
             randomize() {
                 [
-                    { x: {from: 10, range: false}, y: {from: 20, range: false}, value: -10000 },
-                    { x: {from: 46, range: false}, y: {from: 40, range: false}, value: -10000 },
+                    { x: {from: 0, to: 20, range: true}, y: {from: 5, range: false}, value: 20 },
+                    { x: {from: 20, range: false}, y: {from: 6, to: 14, range: true}, value: 20 },
+                    { x: {from: 21, to: 50, range: true}, y: {from: 14, range: false}, value: 20 },
                 ].forEach(config => {
-                    this.$store.commit('groundwater/ADD_WELLS_CONFIG', PlotSelection.make(config));
+                    this.$store.commit('groundwater/ADD_CONSTANT_HEAD_CONFIG', PlotSelection.make(config));
                 });
             }
+        },
+
+        mounted() {
+            if (!ENV_PRODUCTION)
+                this.randomize();
         }
+
     }
 
-    export default InputConfigHeads;
+    export default ConfigConstantHeads;
+
 </script>
 
 <style scoped>

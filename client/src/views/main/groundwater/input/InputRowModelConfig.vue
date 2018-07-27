@@ -1,19 +1,16 @@
 <template>
     <!--Card-->
-    <mdb-card
-        :classes="['mb-4']"
-        :showFooter="true"
-        :footerClasses="['text-right']">
+    <card class="mb-4">
 
         <!-- Card header -->
-        <template slot="header">
+        <card-header class="text-center">
             <i class="fa fa-cog ml-2"></i>
             Configure Model
-        </template>
+        </card-header>
         <!-- /.Card header -->
 
         <!--Card content-->
-        <template slot="body">
+        <card-body>
             <nav-pills>
                 <tab-pane name="Basic" :selected="true">
                     <config-basic></config-basic>
@@ -25,39 +22,48 @@
                     <config-wells></config-wells>
                 </tab-pane>
             </nav-pills>
-        </template>
+
+            <!-- Footer -->
+            <div class="text-right">
+                <hr />
+
+                <span class="red-text">
+                    <small>Enabled when all required ( <span class="badge badge-danger"><i class="fa fa-asterisk"></i></span> ) inputs have been configured</small>
+                </span>
+
+                <btn
+                    color="deep-orange"
+                    size="md"
+                    class="waves-effect"
+                    @click.native="simulate">Simulate</btn>
+            </div>
+            <!-- Footer -->
+        </card-body>
         <!--/.Card content-->
 
-        <!--Card footer-->
-        <template slot="footer">
-            <hr />
-            <span class="red-text inform-font">
-                Enabled when all required ( <span class="badge badge-danger"><i class="fa fa-asterisk"></i></span> ) inputs have been configured
-            </span>
-            <button type="button"
-                class="btn btn-deep-orange waves-effect btn-md"
-                @click="simulate">Simulate</button>
-        </template>
-        <!--/.Card footer-->
-
-    </mdb-card>
+    </card>
     <!--/.Card-->
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
 
-    import MdbCard from '../../../../components/MdbCard.vue';
+    import { mapActions } from 'vuex';
+    import { Card, CardBody, CardHeader, Btn } from 'mdbvue';
+
     import NavPillsVertical from '../../../../components/NavPillsVertical.vue';
     import TabPane from '../../../../components/TabPane.vue';
 
-    import ConfigBasic from './InputConfigBasic.vue';
-    import ConfigConstantHeads from './InputConfigConstantHeads.vue';
-    import ConfigWells from './InputConfigWells.vue';
+    import ConfigBasic from './InputRowModelConfigBasic.vue';
+    import ConfigConstantHeads from './InputRowModelConfigConstantHeads.vue';
+    import ConfigWells from './InputRowModelConfigWells.vue';
 
-    const PlotConfig = {
+    const ModelConfig = {
+
         components: {
-            'mdb-card': MdbCard,
+            Card,
+            CardBody,
+            CardHeader,
+            Btn,
             'nav-pills': NavPillsVertical,
             'tab-pane': TabPane,
             'config-basic': ConfigBasic,
@@ -68,9 +74,11 @@
         methods: {
             ...mapActions('groundwater', ['simulate'])
         }
+
     }
 
-    export default PlotConfig;
+    export default ModelConfig;
+
 </script>
 
 <style scoped>

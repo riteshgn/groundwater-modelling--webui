@@ -1,24 +1,30 @@
 <template>
-    <div ref="gw-modelling" class="row wow fadeIn">
-        <!--Grid column-->
-        <div class="col-md-12 mb-4">
-            <gwm-input-row></gwm-input-row>
-            <gwm-output-row v-show="showOutput"></gwm-output-row>
-        </div>
-    </div>
+    <!-- Section -->
+    <section
+        id="gw-modelling"
+        ref="gw-modelling"
+        class="my-md-5 py-md-5">
+
+        <gwm-input-row></gwm-input-row>
+        <gwm-output-row v-show="showOutput"></gwm-output-row>
+
+    </section>
+    <!-- Section -->
 </template>
 
 <script>
+
     import { mapState } from 'vuex';
     import scrollIntoView from 'scroll-into-view-if-needed';
 
     import GwmInputRow from './input/InputRow.vue';
     import GwmOutputRow from './output/OutputRow.vue';
 
-    const GwmModelling = {
+    const GwModelling = {
+
         components: {
-            'gwm-input-row': GwmInputRow,
-            'gwm-output-row': GwmOutputRow
+            GwmInputRow,
+            GwmOutputRow
         },
 
         computed: {
@@ -33,7 +39,9 @@
                 inline: 'end',
             });
         }
+
     }
 
-    export default GwmModelling;
+    export default GwModelling;
+
 </script>

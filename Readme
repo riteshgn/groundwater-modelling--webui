@@ -34,7 +34,7 @@ Instructions to build & maintain this project
         @ See https://webpack.js.org/concepts/
 
 3. Material Design Bootstrap is used for the design of this project.
-   More details can be found here: https://mdbootstrap.com/
+   More details can be found here: https://mdbootstrap.com/vue
 
 4. Building the distribution
     - Assumption: npm has been installed

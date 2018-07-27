@@ -1,31 +1,38 @@
 <template>
-    <div class="row wow fadeIn">
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-            <input-config></input-config>
-        </div>
-        <!--/.Grid column-->
+    <!-- Grid row -->
+    <row class="mt-md-5 pt-md-5">
+        <!--Model Configuration column-->
+        <column md="6" class="mt-md-5">
+            <model-config></model-config>
+        </column>
+        <!--/.Model Configuration column-->
 
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
-            <input-plot></input-plot>
-        </div>
-        <!--/.Grid column-->
-    </div>
+        <!--Canvas column-->
+        <column md="6" class="mt-md-5">
+            <model-canvas></model-canvas>
+        </column>
+        <!--/.Canvas column-->
+    </row>
 </template>
 
 <script>
-    import InputPlot from './InputPlot.vue';
-    import InputConfig from './InputConfig.vue';
 
-    import __ from 'lodash';
+    import { Row, Column } from 'mdbvue';
+
+    import ModelCanvas from './InputRowModelCanvas.vue';
+    import ModelConfig from './InputRowModelConfig.vue';
 
     const GwmInputRow = {
+
         components: {
-            'input-plot': InputPlot,
-            'input-config': InputConfig
+            Row,
+            Column,
+            ModelCanvas,
+            ModelConfig
         }
+
     };
 
     export default GwmInputRow;
+
 </script>

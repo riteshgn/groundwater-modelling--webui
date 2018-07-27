@@ -16,6 +16,10 @@ const VueLoaderPlugin      = require('vue-loader/lib/plugin');
 
 const path = require('path');
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 module.exports = {
 
     // This is the entrypoint for the webpack module
@@ -25,11 +29,22 @@ module.exports = {
     // webpack can bundle them for us.
     entry: {
         app: path.resolve(__dirname, 'client/src/app.js'),
-        vendor: ['jquery', 'popper.js', 'bootstrap', 'mdbootstrap', 'plotly.js']
+        vendor: [
+            'bootstrap',
+            'jquery',
+            'lodash',
+            'mdbvue',
+            'ndarray-gaussian-filter',
+            'numjs',
+            'plotly.js',
+            'scroll-into-view-if-needed',
+            'vue',
+            'vuex'
+        ]
     },
 
-    // Tells webpack to spit out the bundles based on the key names in the entry
-    // configuration above. So in this case we it will generate app.js and vendor.js files
+    // Tells webpack to spit out the bundles based on the key names in the 'entry'
+    // configuration above. So in this case, it will generate app.js and vendor.js files
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'public/js')
@@ -37,14 +52,13 @@ module.exports = {
 
     // By default webpack has a list of directories which under which it scans for vendor js code.
     // Generally, there are under node_modules/<vendor>/dist/js or something similar.
-    // In below case we want to use the 'jquery', 'popper' and 'bootstrap' versions which are bundled
-    // along with the 'mdbootstrap' package. So we tell webpack from where to resolve them.
     resolve: {
+        extensions: ['.js', '.vue', '.json'],
         alias: {
-            'jquery$': 'mdbootstrap/js/jquery-3.3.1.min.js',
-            'popper.js$': 'mdbootstrap/js/popper.min.js',
-            'bootstrap$': 'mdbootstrap/js/bootstrap.min.js',
-            'vue$': 'vue/dist/vue.common.js'
+            // default vue dist does not play well with webpack
+            'vue$': 'vue/dist/vue.common.js',
+            // mdbvue requires this to resolve its components
+            '@': resolve('src'),
         }
     },
 
@@ -57,6 +71,7 @@ module.exports = {
         // comes out-of-the-box.
         rules: [
 
+            // handles vue components
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
@@ -92,12 +107,15 @@ module.exports = {
                     name: '../img/[name].[ext]',
                 }
             }
+
         ]
     },
     // <-- Configure Modules
 
     // --> Additional plugins
     plugins: [
+
+        // initializes theh vue loader
         new VueLoaderPlugin(),
 
         // When webpack bundles our js code, some of the object (classic example is '$' from jQuery)
@@ -110,7 +128,6 @@ module.exports = {
             jQuery: 'jquery',
             'window.$': 'jquery',
             'window.jQuery': 'jquery',
-            Waves: 'node-waves',
             Plotly: 'plotly.js'
         }),
 
@@ -118,7 +135,7 @@ module.exports = {
         // by our application. The entries defined here would be available globally to any module.
         // ref: https://webpack.js.org/plugins/define-plugin/
         new webpack.DefinePlugin({
-            ENV_PRODUCTION: false
+            ENV_PRODUCTION: true
         }),
 
         // initialize the css extract plugin which helps pulls css styles into bundles.
@@ -126,6 +143,7 @@ module.exports = {
         new MiniCssExtractPlugin({
            filename: '../css/[name].css'
         })
+
     ],
     // <-- Additional plugins
 

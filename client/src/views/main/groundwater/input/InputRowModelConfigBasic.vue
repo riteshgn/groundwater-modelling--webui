@@ -117,15 +117,19 @@
 </template>
 
 <script>
+
     import { mapState } from 'vuex';
 
     const ConfigBasic = {
+
         computed: {
             ...mapState('groundwater', ['row', 'column', 'rechargeRate'])
         }
+
     }
 
     export default ConfigBasic;
+
 </script>
 
 <style scoped>

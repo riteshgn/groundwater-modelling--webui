@@ -1,22 +1,29 @@
 <template>
-    <div ref="gwm-output" class="row wow fadeIn">
-        <!--Grid column-->
-        <div class="col-md-6 offset-md-3 mb-4">
-            <output-plot></output-plot>
-        </div>
-        <!--/.Grid column-->
-    </div>
+    <section ref="gwm-output" class="my-md-5 py-md-5">
+        <!-- Grid row -->
+        <row class="pt-md-5">
+            <!--Output column-->
+            <column md="6" class="mx-auto mb-md-4">
+                <simulation-plot></simulation-plot>
+            </column>
+            <!--/.Output column-->
+        </row>
+    </section>
 </template>
 
 <script>
+
     import { mapState } from 'vuex';
+    import { Row, Column } from 'mdbvue';
     import scrollIntoView from 'scroll-into-view-if-needed';
 
-    import OutputPlot from './OutputPlot.vue';
+    import SimulationPlot from './OutputRowSimulationPlot.vue';
 
     const GwmOutputRow = {
         components: {
-            'output-plot': OutputPlot
+            Row,
+            Column,
+            SimulationPlot
         },
 
         computed: {
