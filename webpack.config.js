@@ -13,6 +13,8 @@
 const webpack              = require('webpack');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin      = require('vue-loader/lib/plugin');
+const HtmlWebpackPlugin    = require('html-webpack-plugin');
+const CleanWebpackPlugin   = require('clean-webpack-plugin');
 
 const path = require('path');
 
@@ -28,25 +30,13 @@ module.exports = {
     // We also tell webpack that we are using some external js libraries so that
     // webpack can bundle them for us.
     entry: {
-        app: path.resolve(__dirname, 'client/src/app.js'),
-        vendor: [
-            'bootstrap',
-            'jquery',
-            'lodash',
-            'mdbvue',
-            'ndarray-gaussian-filter',
-            'numjs',
-            'plotly.js',
-            'scroll-into-view-if-needed',
-            'vue',
-            'vuex'
-        ]
+        app: path.resolve(__dirname, 'client/src/app.js')
     },
 
     // Tells webpack to spit out the bundles based on the key names in the 'entry'
     // configuration above. So in this case, it will generate app.js and vendor.js files
     output: {
-        filename: '[name].js',
+        filename: '[name].[chunkhash].js',
         path: path.resolve(__dirname, 'public/js')
     },
 
@@ -115,6 +105,23 @@ module.exports = {
     // --> Additional plugins
     plugins: [
 
+        // Removes all content in the public folder
+        // This is done each time a new build is triggered to ensure that there are
+        // no unwanted resources in the final distribution.
+        new CleanWebpackPlugin(['public']),
+
+        // Injects the app & vendor js|css files into the html
+        // and copies the html to the distribution folder.
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, 'client/src/index.html'),
+            filename: path.resolve(__dirname, 'public/index.html')
+        }),
+
+        // fix the hash generated for the output files based on the relative path to that file.
+        // this is necessary to ensure that the hash for the vendor output does not change.
+        // ref: https://webpack.js.org/guides/caching/#module-identifiers
+        new webpack.HashedModuleIdsPlugin(),
+
         // initializes theh vue loader
         new VueLoaderPlugin(),
 
@@ -135,7 +142,7 @@ module.exports = {
         // by our application. The entries defined here would be available globally to any module.
         // ref: https://webpack.js.org/plugins/define-plugin/
         new webpack.DefinePlugin({
-            ENV_PRODUCTION: true
+            ENV_PRODUCTION: process.env.NODE_ENV === 'production'
         }),
 
         // initialize the css extract plugin which helps pulls css styles into bundles.
@@ -150,6 +157,12 @@ module.exports = {
     // --> Configure Optimizations
     optimization: {
 
+        // webpack adds boilerplate code to the generated javascript files
+        // for effecient caching, the runtimeChunk optimization pulls out
+        // the boiler plate into a separate file
+        // ref: https://webpack.js.org/configuration/optimization/#optimization-runtimechunk
+        runtimeChunk: 'single',
+
         // helps spit out the bundles into chunks. the two chunks are
         // app.(js|css) and vendor.(js|css)
         // ref: https://webpack.js.org/plugins/split-chunks-plugin/
@@ -163,7 +176,7 @@ module.exports = {
 
                 styles: {
                     test: /\.css$/,
-                    name: '[name].css',
+                    name: '[name].[chunkhash].css',
                     chunks: 'all',
                     enforce: true
                 }

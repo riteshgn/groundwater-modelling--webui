@@ -14,7 +14,7 @@
     import { mapState } from 'vuex';
     import { Container } from 'mdbvue';
 
-    import AppIntro from './AppIntro.vue';
+    import AppIntro from './introduction/AppIntro.vue';
     import GwModelling from './groundwater/GwModelling.vue';
 
     const Main = {

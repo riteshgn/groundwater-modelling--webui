@@ -14,8 +14,8 @@
                 >
                     <img
                         class="img-fluid"
-                        src="img/Groundwater-2.jpg"
-                        alt="GWM" />
+                        :src="GroundwaterImage"
+                        alt="General representation of Groundwater" />
 
                 </view-wrapper>
                 <!-- GW image -->
@@ -61,7 +61,15 @@
     import { mapMutations } from 'vuex';
     import { Row, Column, ViewWrapper, Btn } from 'mdbvue';
 
+    import GroundwaterImage from './introduction.jpg';
+
     const AppIntro = {
+
+        data() {
+            return {
+                GroundwaterImage
+            }
+        },
 
         components: {
             Row,
