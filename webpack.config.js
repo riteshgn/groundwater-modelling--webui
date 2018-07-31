@@ -15,6 +15,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin      = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin    = require('html-webpack-plugin');
 const CleanWebpackPlugin   = require('clean-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const path = require('path');
 
@@ -88,14 +89,24 @@ module.exports = {
                 }
             },
 
-            // collect all images used in the css styles and cache them
+            // collect all images, compress them and send them to the distribution
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-                loader: 'url-loader',
-                options: {
-                    limit: 50000,
-                    name: '../img/[name].[ext]',
-                }
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 10 * 1024,
+                            name: '../img/[name].[ext]',
+                        }
+                    },
+                    {
+                        loader: 'image-webpack-loader',
+                        options: {
+                            disable: process.env.NODE_ENV !== 'production'
+                        }
+                    }
+                ]
             }
 
         ]
@@ -104,6 +115,12 @@ module.exports = {
 
     // --> Additional plugins
     plugins: [
+
+        // in-depth analysis of what is inside the created bundles
+        // to enable simple comment the options object passed to the plugin
+        // or set its value to 'server'
+        // ref: https://github.com/webpack-contrib/webpack-bundle-analyzer
+        new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
 
         // Removes all content in the public folder
         // This is done each time a new build is triggered to ensure that there are
@@ -156,6 +173,13 @@ module.exports = {
 
     // --> Configure Optimizations
     optimization: {
+
+        // ensures that all modules see the correct environment
+        // many vendor libraries have dev only code which are used
+        // only if the environment is production. adding this line
+        // will ensure smaller sized resources when generating
+        // production build
+        nodeEnv: process.env.NODE_ENV,
 
         // webpack adds boilerplate code to the generated javascript files
         // for effecient caching, the runtimeChunk optimization pulls out
