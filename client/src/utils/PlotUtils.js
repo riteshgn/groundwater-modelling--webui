@@ -8,25 +8,43 @@ import __ from 'lodash';
 import Plot from '../api/plot';
 import NdarrayUtils from './NdarrayUtils';
 
+// CONSTANTS (TODO: move to a file?)
+const conv_crit = 1e-3; // maximum change between heads in the same cell in
+                        // neighboring outer iterations must be less than this
+const SOR       = 1.75  // relaxation factor 1=Gauss-Seidel, 1-2 = SOR, < 1=under-relaxed
+const maxLoops  = 1000  // maximum number of outer iterations
+
+// assign reasonalble hydrualic condcutivities to gravel et al.,
+// Units are m/d
+const HYDRUALIC_CONDUCTIVITY = {
+    gravel: parseFloat(10) ** 3,
+    sand: parseFloat(10) ** 1,
+    silt: parseFloat(10) ** -1,
+    clay: parseFloat(10) ** -4
+}
+
+// smoothing constants in x & y directions of random K field
+const connectivity_x = 1;
+const connectivity_y = 1;
+
+// Exposed APIs
 const apis = {
     prepare
 }
 
 export default apis;
 
-///////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Demo function which
- *  - creates random input data for map view
- *  - passes the inputs to the 'preapre plot' API
- *  - returns the output along with the randomly generated heads & wells
+ * Processes data from the model and prepares them to be fed to the
+ * simulation api (Plot).
+ * Once data is ready from the Plot api returns the result
  */
-
-async function prepare({row, column, rechargeRate, thickness, constantHeads, wells}) {
-    const {sizer, rch_rate, cross_section_bool, cellarea,
-        nrow, ncol, conv_crit, SOR, maxLoops,
-        delx, dely, delz, K, Kclay, Kgravel} = _initialize({row, column, rechargeRate, thickness});
+async function prepare({row, column, rechargeRate, gridThickness,
+    modelLayout = 'map', soilType = 'random', constantHeads, wells}) {
+    const { cellarea, delx, dely, delz, K, nrow, ncol, sizer }
+        = _initialize({ row, column, gridThickness, modelLayout, soilType });
 
     const chd = {
         i: constantHeads.x,
@@ -39,92 +57,80 @@ async function prepare({row, column, rechargeRate, thickness, constantHeads, wel
         Q: wells.values
     };
 
+    const cross_section_bool = modelLayout !== 'map';
+    const rch_rate           = rechargeRate;    // recharge volume/day
+
     const {h, ni, qx, qy} = await Plot.prepare({
         sizer, rch_rate, cross_section_bool, cellarea,
         nrow, ncol, conv_crit, SOR, maxLoops, delx, dely,
         delz, K, chd, well
     });
-    return {h};
+
+    return {h, qx, qy, K};
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-function _initialize({row, column, rechargeRate, thickness}) {
-    let delx = row.width; //x-thickness of cell
-    let dely = column.width; //y-thickness of cell
-    let unitThickness = thickness; //defines delz if it's mapView, delz is 1 in cross-section
+function _generateRandomKField(sizer) {
+    // 1. randomly assign int value of 1-4 to an array the size of the model domain
+    let K = NdarrayUtils.ceilNDArrElems(nj.random(sizer[0],sizer[1]).multiply(4).tolist());
 
-    let ncol = row.count; //number of columns in mode
-    let nrow = column.count //number of rows in columns
-    let sizer=[nrow,ncol] //duplet size of model domain
+    // 2. replace all 1's with Kgravel
+    //                2's with Ksand
+    //                3's with Ksilt
+    //                4's with Kclay
+    K = NdarrayUtils.findAndReplace(K, 1, HYDRUALIC_CONDUCTIVITY.gravel);
+    K = NdarrayUtils.findAndReplace(K, 2, HYDRUALIC_CONDUCTIVITY.sand);
+    K = NdarrayUtils.findAndReplace(K, 3, HYDRUALIC_CONDUCTIVITY.silt);
+    K = NdarrayUtils.findAndReplace(K, 4, HYDRUALIC_CONDUCTIVITY.clay);
 
-    let conv_crit=1e-3 //maximum change between heads in the same cell in neighboring outer iterations must be less than this
-    let SOR=1.75 //relaxation factor 1=Gauss-Seidel, 1-2 = SOR, < 1=under-relaxed
-    let maxLoops=1000 //maximum number of outer iterations
+    // 3. smooth the Kfield with gaussian filter
+    K = NdarrayUtils.toArray(
+        gaussianFilter(
+            ndarray(NdarrayUtils.flatten(K), sizer), [connectivity_y, connectivity_x]
+        ),
+        sizer
+    );
 
-    let rch_rate = rechargeRate; // recharge volume/day
+    // 4. restretch following the smoothing to have values range from 10e-4 through 10e3
 
-    let cross_section_bool=false //cross sectional or map view
-    //it's map view
-    let cellarea=delx*dely //each model cell top has an area of row x col in map view
-    let delz=unitThickness //thickness into page = aquifer thickness
-    if (cross_section_bool) { //it's cross sectional model
-        cellarea=delx*1 //model domain is only 1 unit into page in cross section
-        delz=1 //depth into page is one unit width
-    }
+    // convert array to ndarr object so that we can apply numjs apis on it
+    let Kndarr = nj.array(K);
 
-    //initialize K values
-    // assign reasonalble hydrualic condcutivities to gravel et al.,
-    let Kgravel=parseFloat(10)**3//m/d //  '**' means "^"
-    let Ksand=parseFloat(10)**1//m/d
-    let Ksilt=parseFloat(10)**-1//m/d
-    let Kclay=parseFloat(10)**-4//m/d
-
-    let randomKbool=true //should we generate a random K?
-    let connectivity_x=1 //smoothing in x direction of random K field
-    let connectivity_y=1 //smoothing in x direction of random K field
-
-    let aquitard=-1  //>=0 there is an aquitard at row // (negative value means no aquitard), if we want to add a single clay layer in part of the domain
-    let aquitardThick=3 // aquitard thickness
-
-    let K=[];
-    //%% generate K field
-    if (randomKbool) { //if we're generating a radom K field
-        K=NdarrayUtils.ceilNDArrElems(nj.random(sizer[0],sizer[1]).multiply(4).tolist()) //randomly assign int value of 1-4 to an array the size of the model domain
-        K=NdarrayUtils.findAndReplace(K,1,Kgravel);
-        K=NdarrayUtils.findAndReplace(K,2,Ksand);
-        K=NdarrayUtils.findAndReplace(K,3,Ksilt);
-        K=NdarrayUtils.findAndReplace(K,4,Kclay);
-
-        //smooth the Kfield with gaussian filter
-        K = NdarrayUtils.toArray(
-            gaussianFilter(
-                ndarray(NdarrayUtils.flatten(K), sizer), [connectivity_y,connectivity_x]
-            ),
-            sizer
-        );
-
-        //restretch following the smoothing to have values range from 10e-4 through 10e3
-        let Kndarr = nj.array(K);
-        K = nj.exp(
+    return (
+        nj.exp(
             nj
                 .log(Kndarr)
                 .subtract(Math.log(Kndarr.min()))
-                .multiply(Math.log(Kgravel) - Math.log(Kclay))
+                .multiply(Math.log(HYDRUALIC_CONDUCTIVITY.gravel) - Math.log(HYDRUALIC_CONDUCTIVITY.clay))
                 .divide(Math.log(Kndarr.max()) - Math.log(Kndarr.min()))
-                .add(Math.log(Kclay))
-        ).tolist();
+                .add(Math.log(HYDRUALIC_CONDUCTIVITY.clay))
+        ).tolist()
+    );
+}
+
+function _initialize({row, column, gridThickness, modelLayout, soilType}) {
+    const ncol               = row.count;       // number of columns in mode
+    const nrow               = column.count ;   // number of rows in columns
+    const sizer              = [nrow, ncol];    // duplet size of model domain
+
+    const delx = row.width;     // x-thickness of cell
+    const dely = column.width;  // y-thickness of cell
+
+    let cellarea, delz;
+    if (modelLayout === 'map') {
+        cellarea = delx * dely;   // each model cell top has an area of row x col in map view
+        delz     = gridThickness; // thickness into page = aquifer thickness
     } else {
-        K = nj.ones(sizer).multiply(Ksand).tolist();
+        // cross sectional layout
+        cellarea = delx * 1;      // model domain is only 1 unit into page in cross section
+        delz     = 1;             // depth into page is one unit width
     }
 
-    if (aquitard+aquitardThick>nrow) //if this would draw an aquitard out of bounds, don't do it!
-        aquitard=-1
-        console.log('Aquitard out of bounds -- turned off')
-    /*if aquitard>=0: //if we are drawing an aquitard, add 'aquitardThick' rows of clay to domain starting at row 'aquitard'
-        K[aquitard:aquitard+aquitardThick,:]=Kclay*/
+    // initialize K values
+    const K = (soilType === 'random')
+        ? _generateRandomKField(sizer)
+        : nj.ones(sizer).multiply(HYDRUALIC_CONDUCTIVITY[soilType]).tolist();
 
-    return {sizer, rch_rate, cross_section_bool, cellarea,
-        nrow, ncol, conv_crit, SOR, maxLoops,
-        delx, dely, delz, K, Kclay, Kgravel}
+    return {sizer, cellarea, nrow, ncol, delx, dely, delz, K};
 }

@@ -17,17 +17,19 @@ const store = {
 
         column: { count: 50, width: 10 },
 
-        rechargeRate: (.3/365), // m/d - recharge volume/day
+        gridThickness: 100,
 
-        mapView: true,
-
-        thickness: 100,
+        recharge: { volume: .3, days: 365 }, // m/d - recharge volume/day
 
         contourMap: [],
 
         showOutput: false,
 
-        simulationState: 'INIT'
+        simulationState: 'INIT',
+
+        quiver: { x:[], y:[] },
+
+        soil: []
     },
 
     getters: {
@@ -39,12 +41,14 @@ const store = {
 
     mutations: {
         ADD_CONSTANT_HEAD_CONFIG,
-        REMOVE_CONSTANT_HEAD_CONFIG,
         ADD_WELLS_CONFIG,
+        CHANGE_SIMULATION_STATE,
+        REMOVE_CONSTANT_HEAD_CONFIG,
         REMOVE_WELLS_CONFIG,
         SAVE_CONTOUR_MAP,
+        SAVE_QUIVER,
+        SAVE_SOIL,
         SHOW_OUTPUT,
-        CHANGE_SIMULATION_STATE,
     },
 
     actions: {
@@ -116,6 +120,15 @@ function SAVE_CONTOUR_MAP(state, contourMap) {
     state.contourMap = contourMap;
 }
 
+function SAVE_QUIVER(state, quiver) {
+    state.quiver.x = quiver.x;
+    state.quiver.y = quiver.y;
+}
+
+function SAVE_SOIL(state, soil) {
+    state.soil = soil;
+}
+
 function SHOW_OUTPUT(state) {
     state.showOutput = true;
 }
@@ -132,16 +145,18 @@ async function simulate({ state, commit, getters }) {
     const headsSelection = getters.constantHeadsSelection;
     const wellsSelection = getters.wellsSelection;
 
-    const {h} = await PlotUtils.prepare({
+    const {h, qx, qy, K} = await PlotUtils.prepare({
         row: state.row,
         column: state.column,
-        rechargeRate: state.rechargeRate,
-        thickness: state.thickness,
+        rechargeRate: state.recharge.volume / state.recharge.days,
+        gridThickness: state.gridThickness,
         constantHeads: headsSelection,
         wells: wellsSelection
     });
 
     commit('SAVE_CONTOUR_MAP', h);
+    commit('SAVE_QUIVER', { x: qx, y: qy });
+    commit('SAVE_SOIL', K);
     commit('SHOW_OUTPUT');
     commit('CHANGE_SIMULATION_STATE', 'COMPLETED');
 }
