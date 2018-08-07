@@ -1,18 +1,19 @@
 <template>
     <!-- Grid row -->
-    <row class="mt-md-5 pt-md-5">
+    <row>
         <!--Model Configuration column-->
-        <column md="6" class="mt-md-5">
+        <column md="6">
             <model-config></model-config>
         </column>
         <!--/.Model Configuration column-->
 
         <!--Canvas column-->
-        <column md="6" class="mt-md-5">
+        <column md="6">
             <model-canvas></model-canvas>
         </column>
         <!--/.Canvas column-->
     </row>
+    <!-- Grid row -->
 </template>
 
 <script>

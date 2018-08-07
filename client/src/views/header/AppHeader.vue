@@ -3,9 +3,9 @@
     <header>
         <!-- Navbar -->
         <navbar
-            class="flexible-navbar navbar-dark primary-color-dark"
+            class="flexible-navbar syracuse-orange white-text"
             position="top"
-            name="Groundwater Simulation"
+            name="SOGWaM - The Simple Online Groundwater Model"
             href="#"
             scrolling
         >

@@ -1,7 +1,7 @@
 <template>
     <!-- Footer -->
     <ftr
-        color="primary-color-dark"
+        color="syracuse-extra-dark-gray"
         class="text-center font-small darken-2"
     >
 

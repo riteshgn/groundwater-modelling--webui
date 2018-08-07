@@ -79,13 +79,14 @@ module.exports = {
             },
 
             // collect all fonts used in the css styles and cache them
+            // TODO: url-loader did not extract the fonts in the local client/src/fonts directory
+            //       so switched to file-loader. needs investigation.
             {
                 test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-                loader: "url-loader",
+                loader: 'file-loader',
                 options: {
-                    limit: 50000,
-                    mimetype: 'application/font-woff',
-                    name: '../fonts/[name].[ext]',
+                    name: '[name].[ext]',
+                    outputPath: '../fonts/',
                 }
             },
 

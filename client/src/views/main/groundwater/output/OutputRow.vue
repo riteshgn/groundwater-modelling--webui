@@ -36,8 +36,8 @@
                     scrollIntoView(this.$refs['gwm-output'], {
                         behavior: 'smooth',
                         scrollMode: 'if-needed',
-                        block: 'nearest',
-                        inline: 'nearest',
+                        block: 'center',
+                        inline: 'center',
                     });
                 }
             }

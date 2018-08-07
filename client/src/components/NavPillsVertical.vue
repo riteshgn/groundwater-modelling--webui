@@ -1,6 +1,6 @@
 <template>
     <div class="row wow fadeIn">
-        <div class="col-md-3 md-4">
+        <div class="col-md-3">
             <div class="list-group list-group-flush">
                 <a
                     :class="{'list-group-item': true, 'active': tab.active, 'waves-effect': true}"
@@ -10,7 +10,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-9 md-4">
+        <div class="col-md-9">
             <slot></slot>
         </div>
     </div>
@@ -55,10 +55,11 @@
     }
 
     .list-group-item {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
     }
 
     .list-group-item.active {
         color: #fff !important;
+        background-color: #0072ee;
     }
 </style>

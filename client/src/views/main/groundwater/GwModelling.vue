@@ -3,7 +3,7 @@
     <section
         id="gw-modelling"
         ref="gw-modelling"
-        class="my-md-5 py-md-5">
+        class="py-md-4">
 
         <gwm-input-row></gwm-input-row>
         <gwm-output-row v-show="showOutput"></gwm-output-row>
@@ -35,8 +35,8 @@
             scrollIntoView(this.$refs['gw-modelling'], {
                 behavior: 'smooth',
                 scrollMode: 'if-needed',
-                block: 'end',
-                inline: 'end',
+                block: 'center',
+                inline: 'center',
             });
         }
 

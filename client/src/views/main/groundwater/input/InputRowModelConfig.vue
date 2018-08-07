@@ -27,7 +27,7 @@
             <div class="text-right">
                 <hr />
 
-                <span class="red-text">
+                <span class="inform-font">
                     <small>Enabled when all required ( <span class="badge badge-danger"><i class="fa fa-asterisk"></i></span> ) inputs have been configured</small>
                 </span>
 
@@ -83,7 +83,8 @@
 
 <style scoped>
     .inform-font {
-        font-size: 0.6rem;
-        font-style: italic;
+        font-size: 0.85rem;
+        /*font-style: italic;*/
+        color: #e72400;
     }
 </style>

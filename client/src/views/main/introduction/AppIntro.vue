@@ -26,11 +26,13 @@
             <!-- Intro Text column -->
             <column md="5" class="mr-auto">
 
-                <h3 class="font-weight-bold mb-3 p-0">Welcome!</h3>
+                <p class="h4 font-weight-bold mb-3 p-0">Welcome</p>
 
-                <p class="text-justify">Darcy’s law is an equation that describes the flow of a fluid through a porous medium. The rate at which groundwater flows is equal to the product of the hydraulic conductivity multiplied by the hydraulic gradient.</p>
+                <p class="text-justify">Numerical groundwater models have become one of the most commonly used and important groundwater tools over the last half century. This has given experienced groundwater modelers increased control and power to answer a wide range of questions. However, complex models and interfaces are difficult for novices to learn.</p>
 
-                <p class="text-justify">This software modelling system will enable users to visualize the groundwater flow on a given terrain by simulating Darcy's law.</p>
+                <p class="text-justify">The Simple Online Groundwater Model (SOGWaM) is built for budding hydro geology enthusiasts. It allows you to simulate and visualize groundwater flow, and to understand how system changes affect the flow field by developing and testing hypotheses.</p>
+
+                <p class="text-justify">Happy Learning !</p>
 
                 <!-- Do more buttons -->
                 <btn
@@ -50,8 +52,6 @@
 
         </row>
         <!-- Grid row -->
-
-        <hr class="my-5">
     </section>
     <!--/.Section-->
 </template>
