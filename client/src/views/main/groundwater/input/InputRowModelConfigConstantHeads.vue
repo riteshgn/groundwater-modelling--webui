@@ -1,6 +1,28 @@
 <template>
     <!-- Default horizontal form -->
     <form>
+        <fieldset class="form-group mt-md-3">
+            <legend><div class="legend-container">Current Canvas Selections</div></legend>
+
+            <div class="canvas-selections">
+                <span v-show="stringifiedHeads.length === 0">
+                    <small><em class="text-muted">No Selections Available</em></small>
+                </span>
+
+                <row class="px-md-2">
+                    <canvas-selections
+                        :selections="groupOneSelections"
+                        @remove-canvas-selection="removeConfig"></canvas-selections>
+                    <canvas-selections
+                        :selections="groupTwoSelections"
+                        @remove-canvas-selection="removeConfig"></canvas-selections>
+                    <canvas-selections
+                        :selections="groupThreeSelections"
+                        @remove-canvas-selection="removeConfig"></canvas-selections>
+                </row>
+            </div>
+        </fieldset>
+
         <fieldset class="form-group">
             <legend><div class="legend-container">New Canvas Selection</div></legend>
 
@@ -115,24 +137,6 @@
                 </column>
             </row>
             <!-- Grid row -->
-        </fieldset>
-
-        <fieldset class="form-group mt-md-3">
-            <legend><div class="legend-container">Current Canvas Selections</div></legend>
-
-            <div class="canvas-selections">
-                <row class="px-md-2">
-                    <canvas-selections
-                        :selections="groupOneSelections"
-                        @remove-canvas-selection="removeConfig"></canvas-selections>
-                    <canvas-selections
-                        :selections="groupTwoSelections"
-                        @remove-canvas-selection="removeConfig"></canvas-selections>
-                    <canvas-selections
-                        :selections="groupThreeSelections"
-                        @remove-canvas-selection="removeConfig"></canvas-selections>
-                </row>
-            </div>
         </fieldset>
     </form>
     <!-- Default horizontal form -->
