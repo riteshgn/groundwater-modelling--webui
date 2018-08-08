@@ -1,6 +1,6 @@
 'use strict';
 
-import __ from 'lodash';
+import __mean from 'lodash/mean';
 
 const apis = {
     ceilNDArrElems,
@@ -62,7 +62,7 @@ function toArray(ndarr, shape)
 }
 
 function nanMean(arr) {
-    return __.mean(
+    return __mean(
         flatten(arr)
             .filter((elem) => !isNaN(elem))
     );

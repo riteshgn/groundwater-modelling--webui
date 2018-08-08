@@ -1,159 +1,139 @@
 <template>
     <!-- Default horizontal form -->
     <form>
-        <!-- Grid row -->
-        <div class="form-group row">
-            <div class="col-sm-4">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="x-plotSelection-from">x</span>
-                    </div>
-                    <input
-                        type="number"
-                        class="form-control"
-                        placeholder="from"
-                        v-model.number="plotSelection.x.from">
-                </div>
-            </div>
+        <fieldset class="form-group">
+            <legend><div class="legend-container">New Canvas Selection</div></legend>
 
-            <div class="col-sm-4">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="x-plotSelection-to">to</span>
+            <!-- Grid row -->
+            <row>
+                <label class="col-sm-3 col-form-label">X Direction</label>
+
+                <column sm="3">
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            id="is-x-a-range"
+                            name="is-x-a-range"
+                            v-model="plotSelection.x.range">
+                        <label class="custom-control-label" for="is-x-a-range">Range?</label>
                     </div>
+                </column>
+
+                <column sm="3">
                     <input
                         type="number"
-                        class="form-control"
-                        placeholder="to"
+                        id="x-selection-from"
+                        class="form-control form-control-sm"
+                        placeholder="From"
+                        v-model="plotSelection.x.from">
+                    <label class="sr-only" for="x-selection-from">
+                        Selection in X direction begins from this cell number
+                    </label>
+                </column>
+
+                <column sm="3">
+                    <input
+                        type="number"
+                        id="x-selection-to"
+                        class="form-control form-control-sm"
+                        placeholder="To"
                         :disabled="!plotSelection.x.range"
-                        v-model.number="plotSelection.x.to">
-                </div>
-            </div>
+                        v-model="plotSelection.x.to">
+                    <label class="sr-only" for="x-selection-to">
+                        Selection in X direction ends at this cell number
+                    </label>
+                </column>
+            </row>
+            <!-- Grid row -->
 
-            <div class="col-sm-1">
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="xRange"
-                    v-model="plotSelection.x.range">
-            </div>
-            <label class="col-sm-3 form-check-label" for="xRange">
-                Range
-            </label>
-        </div>
-        <!-- Grid row -->
+            <!-- Grid row -->
+            <row>
+                <label class="col-sm-3 col-form-label">Y Direction</label>
 
-        <!-- Grid row -->
-        <div class="form-group row">
-            <div class="col-sm-4">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="y-plotSelection-from">y</span>
+                <column sm="3">
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            id="is-y-a-range"
+                            name="is-y-a-range"
+                            v-model="plotSelection.y.range">
+                        <label class="custom-control-label" for="is-y-a-range">Range?</label>
                     </div>
+                </column>
+
+                <column sm="3">
                     <input
                         type="number"
-                        class="form-control"
-                        placeholder="from"
-                        v-model.number="plotSelection.y.from">
-                </div>
-            </div>
+                        id="y-selection-from"
+                        class="form-control form-control-sm"
+                        placeholder="From"
+                        v-model="plotSelection.y.from">
+                    <label class="sr-only" for="y-selection-from">
+                        Selection in Y direction begins from this cell number
+                    </label>
+                </column>
 
-            <div class="col-sm-4">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="y-plotSelection-to">to</span>
-                    </div>
+                <column sm="3">
                     <input
                         type="number"
-                        class="form-control"
-                        placeholder="to"
+                        id="y-selection-to"
+                        class="form-control form-control-sm"
+                        placeholder="To"
                         :disabled="!plotSelection.y.range"
-                        v-model.number="plotSelection.y.to">
-                </div>
-            </div>
+                        v-model="plotSelection.y.to">
+                    <label class="sr-only" for="y-selection-to">
+                        Selection in Y direction ends at this cell number
+                    </label>
+                </column>
+            </row>
+            <!-- Grid row -->
 
-            <div class="col-sm-1">
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="yRange"
-                    v-model="plotSelection.y.range">
-            </div>
-            <label class="col-sm-3 form-check-label" for="yRange">
-                Range
-            </label>
-        </div>
-        <!-- Grid row -->
-
-        <!-- Grid row -->
-        <div class="form-group row">
-            <div class="col-sm-4">
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="plotSelection-value">Value</span>
-                    </div>
+            <!-- Grid row -->
+            <row>
+                <label for="selection-value" class="col-sm-3 col-form-label">Value</label>
+                <column sm="3">
                     <input
                         type="number"
-                        class="form-control"
-                        v-model.number="plotSelection.value">
-                </div>
+                        id="selection-value"
+                        class="form-control form-control-sm"
+                        v-model="plotSelection.value">
+                </column>
+
+                <column sm="6">
+                    <btn
+                        color="primary"
+                        size="sm"
+                        class="waves-effect"
+                        @click.native.prevent="saveConfig">Save</btn>
+                    <btn
+                        color="outline-primary"
+                        size="sm"
+                        class="waves-effect"
+                        @click.native.prevent="randomize">Randomize</btn>
+                </column>
+            </row>
+            <!-- Grid row -->
+        </fieldset>
+
+        <fieldset class="form-group mt-md-3">
+            <legend><div class="legend-container">Current Canvas Selections</div></legend>
+
+            <div class="canvas-selections">
+                <row class="px-md-2">
+                    <canvas-selections
+                        :selections="groupOneSelections"
+                        @remove-canvas-selection="removeConfig"></canvas-selections>
+                    <canvas-selections
+                        :selections="groupTwoSelections"
+                        @remove-canvas-selection="removeConfig"></canvas-selections>
+                    <canvas-selections
+                        :selections="groupThreeSelections"
+                        @remove-canvas-selection="removeConfig"></canvas-selections>
+                </row>
             </div>
-        </div>
-        <!-- Grid row -->
-
-        <!-- Grid row -->
-        <div class="form-group row">
-            <div class="col-sm-10">
-                <btn
-                    color="primary"
-                    size="sm"
-                    class="waves-effect"
-                    @click.native.prevent="saveConfig">Save</btn>
-                <btn
-                    color="outline-primary"
-                    size="sm"
-                    class="waves-effect"
-                    @click.native.prevent="randomize">Randomize</btn>
-            </div>
-        </div>
-        <!-- Grid row -->
-
-        <hr/>
-
-        <div class="table-wrapper-scroll-y">
-            <!-- Table  -->
-            <tbl sm class="btn-table">
-                <!-- Table head -->
-                <tbl-head class="blue lighten-4">
-                    <tr>
-                        <th>#</th>
-                        <th>x coords</th>
-                        <th>y coords</th>
-                        <th>value</th>
-                        <th>Action</th>
-                    </tr>
-                </tbl-head>
-                <!-- Table head -->
-
-                <!-- Table body -->
-                <tbl-body>
-                    <tr v-for="row in stringifiedHeads">
-                        <th scope="row">{{ row.srNo }}</th>
-                        <td><pre>{{ row.x }}</pre></td>
-                        <td><pre>{{ row.y }}</pre></td>
-                        <td><pre>{{ row.value }}</pre></td>
-                        <td>
-                            <btn
-                                color="primary"
-                                size="sm"
-                                class="m-0"
-                                @click.native.prevent="removeConfig(row.srNo)"> x </btn>
-                        </td>
-                    </tr>
-                </tbl-body>
-            </tbl>
-            <!-- Table  -->
-        </div>
+        </fieldset>
     </form>
     <!-- Default horizontal form -->
 </template>
@@ -161,9 +141,10 @@
 <script>
 
     import { mapGetters, mapMutations } from 'vuex';
-    import { Tbl, TblHead, TblBody, Btn } from 'mdbvue';
+    import { Row, Column, Btn } from 'mdbvue';
 
     import PlotSelection from '../../../../core/PlotSelection';
+    import CanvasSelections from './InputRowCanvasSelections.vue';
 
     const ConfigConstantHeads = {
 
@@ -174,14 +155,26 @@
         },
 
         components: {
-            Tbl,
-            TblHead,
-            TblBody,
-            Btn
+            Row,
+            Column,
+            Btn,
+            CanvasSelections
         },
 
         computed: {
-            ...mapGetters('groundwater', ['stringifiedHeads'])
+            ...mapGetters('groundwater', ['stringifiedHeads']),
+
+            groupOneSelections() {
+                return this.stringifiedHeads.filter((_, index) => index % 3 === 0);
+            },
+
+            groupTwoSelections() {
+                return this.stringifiedHeads.filter((_, index) => index % 3 === 1);
+            },
+
+            groupThreeSelections() {
+                return this.stringifiedHeads.filter((_, index) => index % 3 === 2);
+            }
         },
 
         methods: {
@@ -217,36 +210,21 @@
 </script>
 
 <style scoped>
-    .form-group {
-        margin-bottom: 0;
-    }
-
-    .form-group .form-check-label {
-        padding-left: 0;
-        padding-right: 0;
-        margin-top: 0.30rem;
-        margin-left: -1.25rem;
-        font-size: 0.75rem;
-    }
-
-    .form-group .form-check-input {
-        padding: 0;
-        margin: 0.5rem 0 0 -1rem;
-    }
-
-    .table-wrapper-scroll-y {
+    .canvas-selections {
         display: block;
-        max-height: 160px;
+        max-height: 7.5rem;
         overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0.1rem;
         -ms-overflow-style: -ms-autohiding-scrollbar;
     }
 
-    tbody th {
-        font-size: 0.75rem;
+    .custom-control-inline {
+        padding-top: 0.25rem;
     }
 
-    tbody td .btn {
-        padding: .3rem .6rem;
-        margin-top: -0.75rem !important;
+    .custom-control-label {
+        font-size: 0.85rem;
+        padding-top: 0.2rem;
     }
 </style>

@@ -23,7 +23,7 @@
 body {
     font-family: ShermanSerif, Georgia, serif !important;
     color: #404040;
-    background-color: #E8EAEB !important;
+    background-color: #E8EAEB !important; /*syracuse-light-gray*/
 }
 
 form input,

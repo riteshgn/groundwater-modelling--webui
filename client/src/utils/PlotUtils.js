@@ -3,7 +3,6 @@
 import nj from 'numjs';
 import ndarray from 'ndarray';
 import gaussianFilter from 'ndarray-gaussian-filter';
-import __ from 'lodash';
 
 import Plot from '../api/plot';
 import NdarrayUtils from './NdarrayUtils';

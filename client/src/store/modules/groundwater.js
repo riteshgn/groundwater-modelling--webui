@@ -1,6 +1,7 @@
 'use strict';
 
-import __ from 'lodash';
+import __range from 'lodash/range';
+import __flatMap from 'lodash/flatMap';
 
 import PlotUtils from '../../utils/PlotUtils';
 
@@ -166,23 +167,23 @@ async function simulate({ state, commit, getters }) {
 function _extrapolatePoints(head) {
     let xs = [head.x.from];
     if (head.x.range) {
-        xs = __.range(head.x.from, head.x.to + 1);
+        xs = __range(head.x.from, head.x.to + 1);
     }
 
     let ys = [head.y.from];
     if (head.y.range) {
-        ys = __.range(head.y.from, head.y.to + 1);
+        ys = __range(head.y.from, head.y.to + 1);
     }
 
     let x = xs;
     let y = ys;
 
     if (xs.length > 1) {
-        x = __.flatMap(ys, () => xs);
-        y = __.flatMap(ys, (y) => Array(xs.length).fill(y));
+        x = __flatMap(ys, () => xs);
+        y = __flatMap(ys, (y) => Array(xs.length).fill(y));
     } else if (ys.length > 1) {
-        x = __.flatMap(xs, (x) => Array(ys.length).fill(x));
-        y = __.flatMap(xs, () => ys);
+        x = __flatMap(xs, (x) => Array(ys.length).fill(x));
+        y = __flatMap(xs, () => ys);
     }
 
     return {x, y, values: Array(x.length).fill(head.value)};

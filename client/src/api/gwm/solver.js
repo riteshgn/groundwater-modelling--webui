@@ -5,7 +5,6 @@
  */
 
 import nj from 'numjs';
-import __ from 'lodash';
 
 import NdarrayUtils from '../../utils/NdarrayUtils';
 
