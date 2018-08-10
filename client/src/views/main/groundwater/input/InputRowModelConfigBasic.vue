@@ -14,7 +14,9 @@
                             class="custom-control-input"
                             id="layout-style-map"
                             name="layout"
-                            checked>
+                            value="map"
+                            :checked="modelLayout === 'map'"
+                            @input="updateLayout('map')">
                         <label class="custom-control-label" for="layout-style-map">Map</label>
                     </div>
 
@@ -23,7 +25,10 @@
                             type="radio"
                             class="custom-control-input"
                             id="layout-style-cross-section"
-                            name="layout">
+                            name="layout"
+                            value="cross_section"
+                            :checked="modelLayout === 'cross_section'"
+                            @input="updateLayout('cross_section')">
                         <label class="custom-control-label" for="layout-style-cross-section">Cross Section</label>
                     </div>
                 </column>
@@ -49,8 +54,8 @@
                             type="number"
                             class="form-control"
                             id="row-width"
-                            v-model="row.width"
-                            disabled>
+                            :value="row.width"
+                            @input="updateRowWidth($event.target.value)">
                         <div class="input-group-append">
                             <span class="input-group-text" id="row-width-units">m</span>
                         </div>
@@ -78,8 +83,8 @@
                             type="number"
                             class="form-control"
                             id="col-width"
-                            v-model="column.width"
-                            disabled>
+                            :value="column.width"
+                            @input="updateColumnWidth($event.target.value)">
                         <div class="input-group-append">
                             <span class="input-group-text" id="col-width-units">m</span>
                         </div>
@@ -97,8 +102,9 @@
                             type="number"
                             class="form-control"
                             id="grid-thickness"
-                            v-model="gridThickness"
-                            disabled>
+                            :value="gridThickness"
+                            :disabled="gridThicknessDisabled"
+                            @input="updateGridThickness($event.target.value)">
                         <div class="input-group-append">
                             <span class="input-group-text" id="grid-thickness-units">m</span>
                         </div>
@@ -120,7 +126,8 @@
                             type="number"
                             class="form-control"
                             id="recharge-volume"
-                            v-model="recharge.volume">
+                            :value="recharge.volume"
+                            @input="updateRechargeVolume($event.target.value)">
                         <div class="input-group-append">
                             <span class="input-group-text" id="recharge-volume-units">m<sup>3</sup></span>
                         </div>
@@ -133,7 +140,8 @@
                         type="number"
                         id="recharge-days"
                         class="form-control form-control-sm"
-                        v-model="recharge.days">
+                        :value="recharge.days"
+                        @input="updateRechargePeriod($event.target.value)">
                 </column>
             </row>
             <!-- Grid row -->
@@ -146,12 +154,18 @@
             <row class="form-group">
                 <label for="soil-type" class="col-sm-3 col-form-label">Soil Type</label>
                 <column sm="9">
-                    <select name="soil-type" id="soil-type" class="browser-default w-100 form-control form-control-sm">
-                        <option value="gravel">Gravel</option>
-                        <option value="sand">Sand</option>
-                        <option value="silt">Silt</option>
-                        <option value="clay">Clay</option>
-                        <option value="random" selected>Randomize</option>
+                    <select
+                        name="soil-type"
+                        id="soil-type"
+                        class="browser-default w-100 form-control form-control-sm"
+                        @input="updateSoilType($event.target.value)">
+                        <option
+                            v-for="soilType in soilTypes"
+                            :key="soilType.id"
+                            :value="soilType.id"
+                            :selected="soilType.selected">
+                            {{ soilType.name }}
+                        </option>
                     </select>
                 </column>
             </row>
@@ -164,9 +178,23 @@
 <script>
 
     import { Row, Column } from 'mdbvue';
-    import { mapState } from 'vuex';
+    import { mapState, mapMutations } from 'vuex';
 
     const ConfigBasic = {
+
+        data() {
+            return  {
+                prevGridThickness: -1,
+
+                soilTypes: [
+                    { id: 'gravel', name: 'Gravel', selected: false  },
+                    { id: 'sand', name: 'Sand', selected: false  },
+                    { id: 'silt', name: 'Silt', selected: false  },
+                    { id: 'clay', name: 'Clay', selected: false  },
+                    { id: 'random', name: 'Randomize', selected: false  }
+                ]
+            }
+        },
 
         components: {
             Row,
@@ -174,7 +202,51 @@
         },
 
         computed: {
-            ...mapState('groundwater', ['row', 'column', 'recharge', 'gridThickness'])
+            ...mapState('groundwater', ['row', 'column', 'recharge',
+                'gridThickness', 'modelLayout', 'soilType']),
+
+            gridThicknessDisabled() {
+                return this.modelLayout === 'cross_section';
+            }
+        },
+
+        methods: {
+            ...mapMutations('groundwater', {
+                updateRowWidth: 'UPDATE_ROW_WIDTH',
+                updateColumnWidth: 'UPDATE_COLUMN_WIDTH',
+                updateGridThickness: 'UPDATE_GRID_THICKNESS',
+                updateRechargeVolume: 'UPDATE_RECHARGE_VOLUME',
+                updateRechargePeriod: 'UPDATE_RECHARGE_PERIOD'
+            }),
+
+            updateLayout(newValue) {
+                this.$store.commit('groundwater/UPDATE_MODEL_LAYOUT', newValue);
+
+                // grid thickness is set to 1 by default when 'cross section' is selected
+                // ensure to cache the user entered value for thickness when
+                // the radio button is flipped so that when 'map' view is selected the
+                // cached entry can be displayed back to the user
+                if (newValue === 'cross_section') {
+                    this.prevGridThickness = this.$store.state.groundwater.gridThickness;
+                    this.$store.commit('groundwater/UPDATE_GRID_THICKNESS', 1);
+                } else if (this.prevGridThickness !== -1) {
+                    this.$store.commit('groundwater/UPDATE_GRID_THICKNESS', this.prevGridThickness);
+                }
+            },
+
+            updateSoilType(newValue) {
+                this.$store.commit('groundwater/UPDATE_SOIL_TYPE', newValue);
+                this.setSoilTypeSelection();
+            },
+
+            setSoilTypeSelection() {
+                this.soilTypes.forEach(soilType => soilType.selected = soilType.id === this.soilType);
+            }
+        },
+
+        created() {
+            // set the default selection for the soil type dropdown
+            this.setSoilTypeSelection();
         }
 
     }

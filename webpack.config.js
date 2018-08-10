@@ -98,9 +98,12 @@ module.exports = {
                         loader: 'url-loader',
                         options: {
                             limit: 10 * 1024,
-                            name: '../img/[name].[ext]',
+                            name: '[name].[ext]',
+                            outputPath: '../img/',
+                            publicPath: 'img/',
                         }
                     },
+
                     {
                         loader: 'image-webpack-loader',
                         options: {
@@ -197,13 +200,6 @@ module.exports = {
                     test: /[\\/]node_modules[\\/]/,
                     name: 'vendor',
                     chunks: 'all'
-                },
-
-                styles: {
-                    test: /\.css$/,
-                    name: '[name].[chunkhash].css',
-                    chunks: 'all',
-                    enforce: true
                 }
             }
         }

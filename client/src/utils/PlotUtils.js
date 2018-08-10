@@ -40,7 +40,7 @@ export default apis;
  * simulation api (Plot).
  * Once data is ready from the Plot api returns the result
  */
-async function prepare({row, column, rechargeRate, gridThickness,
+async function prepare({row, column, recharge, gridThickness,
     modelLayout = 'map', soilType = 'random', constantHeads, wells}) {
     const { cellarea, delx, dely, delz, K, nrow, ncol, sizer }
         = _initialize({ row, column, gridThickness, modelLayout, soilType });
@@ -57,7 +57,7 @@ async function prepare({row, column, rechargeRate, gridThickness,
     };
 
     const cross_section_bool = modelLayout !== 'map';
-    const rch_rate           = rechargeRate;    // recharge volume/day
+    const rch_rate           = recharge.volume / recharge.days;    // recharge volume/day
 
     const {h, ni, qx, qy} = await Plot.prepare({
         sizer, rch_rate, cross_section_bool, cellarea,

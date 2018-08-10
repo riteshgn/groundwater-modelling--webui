@@ -11,6 +11,7 @@ const store = {
     state: {
         // array of class core/PlotSelection
         constantHeads: [],
+
         // array of class core/PlotSelection
         wells: [],
 
@@ -30,7 +31,12 @@ const store = {
 
         quiver: { x:[], y:[] },
 
-        soil: []
+        soil: [],
+
+        soilType: 'random',
+
+        // options are map or cross_section
+        modelLayout: 'map'
     },
 
     getters: {
@@ -50,6 +56,13 @@ const store = {
         SAVE_QUIVER,
         SAVE_SOIL,
         SHOW_OUTPUT,
+        UPDATE_COLUMN_WIDTH,
+        UPDATE_GRID_THICKNESS,
+        UPDATE_MODEL_LAYOUT,
+        UPDATE_RECHARGE_PERIOD,
+        UPDATE_RECHARGE_VOLUME,
+        UPDATE_ROW_WIDTH,
+        UPDATE_SOIL_TYPE
     },
 
     actions: {
@@ -138,6 +151,34 @@ function CHANGE_SIMULATION_STATE(state, value) {
     state.simulationState = value;
 }
 
+function UPDATE_MODEL_LAYOUT(state, value) {
+    state.modelLayout = value;
+}
+
+function UPDATE_GRID_THICKNESS(state, value) {
+    state.gridThickness = value;
+}
+
+function UPDATE_RECHARGE_PERIOD(state, value) {
+    state.recharge.days = value;
+}
+
+function UPDATE_RECHARGE_VOLUME(state, value) {
+    state.recharge.volume = value;
+}
+
+function UPDATE_COLUMN_WIDTH(state, value) {
+    state.column.width = value;
+}
+
+function UPDATE_ROW_WIDTH(state, value) {
+    state.row.width = value;
+}
+
+function UPDATE_SOIL_TYPE(state, value) {
+    state.soilType = value;
+}
+
 //////////////////////////////////////////////////////////////////////
 
 async function simulate({ state, commit, getters }) {
@@ -149,10 +190,12 @@ async function simulate({ state, commit, getters }) {
     const {h, qx, qy, K} = await PlotUtils.prepare({
         row: state.row,
         column: state.column,
-        rechargeRate: state.recharge.volume / state.recharge.days,
+        recharge: state.recharge,
         gridThickness: state.gridThickness,
         constantHeads: headsSelection,
-        wells: wellsSelection
+        wells: wellsSelection,
+        modelLayout: state.modelLayout,
+        soilType: state.soilType
     });
 
     commit('SAVE_CONTOUR_MAP', h);
