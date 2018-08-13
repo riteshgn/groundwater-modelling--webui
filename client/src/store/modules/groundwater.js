@@ -40,10 +40,13 @@ const store = {
     },
 
     getters: {
+        constantHeadsSelection,
         stringifiedHeads,
         stringifiedWells,
-        constantHeadsSelection,
         wellsSelection,
+        basicConfigReady,
+        constantHeadsReady,
+        wellsReady
     },
 
     mutations: {
@@ -104,6 +107,23 @@ function wellsSelection(state) {
             .map(_extrapolatePoints)
             .reduce(_concatExtrapolation, {x: [], y: [], values: []})
     );
+}
+
+function basicConfigReady(state) {
+    return (
+        _isValidModelLayout(state.modelLayout)
+        && _isValidGridDim(state.row, state.column, state.gridThickness)
+        && _isValidRechargeRate(state.recharge)
+        && _isValidSoilType(state.soilType)
+    );
+}
+
+function constantHeadsReady(state) {
+    return state.constantHeads.length > 0;
+}
+
+function wellsReady(state) {
+    return state.wells.length > 0;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -237,4 +257,24 @@ function _concatExtrapolation(out, points) {
     out.y = out.y.concat(points.y);
     out.values = out.values.concat(points.values);
     return out;
+}
+
+function _isValidModelLayout(layout) {
+    return ['map', 'cross_section'].indexOf(layout) !== -1;
+}
+
+function _isValidGridDim(row, column, gridThickness) {
+    return (
+        row && row.count && row.width
+        && column && column.count && column.width
+        && gridThickness
+    );
+}
+
+function _isValidRechargeRate(recharge) {
+    return recharge && recharge.volume && recharge.days;
+}
+
+function _isValidSoilType(soilType) {
+    return ['gravel', 'sand', 'silt', 'clay', 'random'].indexOf(soilType) !== -1;
 }

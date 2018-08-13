@@ -104,6 +104,17 @@ legend {
     background-color: #D44500 !important; /*syracuse-orange*/
 }
 
+.btn:disabled .btn-deep-orange {
+    background-color: #bc5b00 !important;
+}
+
+/** styles the asterix denoting required inputs for a navigation pill */
+.required-pill-asterix {
+    color: #e72400;
+    position: relative;
+    top: -0.25rem !important;
+}
+
 /** sizing of form labels */
 .col-form-label {
     font-size: 0.85rem;
@@ -112,13 +123,13 @@ legend {
 /** proper contrast ratio for the toaster displaying error alerts */
 .toasted.error {
     background-color: #e72400 !important;
-    color: #080400 !important;
 }
 
-/** proper font-sizing for the toaster action */
+/** proper font sizing & color for the toaster action */
 .toasted .action {
     font-size: 0.65rem !important;
     margin-top: 7px !important;
+    color: #080400 !important;
 }
 
 /** this is required to override the ripple class added by mdbootstrap */

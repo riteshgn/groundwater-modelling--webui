@@ -6,7 +6,7 @@
                     :class="{'list-group-item': true, 'active': tab.active, 'waves-effect': true}"
                     v-for="tab in tabs"
                     @click="switchTab(tab)">
-                    {{ tab.name }}
+                    <span v-html="tab.name"></span>
                 </a>
             </div>
         </div>
@@ -55,7 +55,7 @@
     }
 
     .list-group-item {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
     }
 
     .list-group-item.active {
