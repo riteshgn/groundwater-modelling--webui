@@ -9,8 +9,9 @@ import 'font-awesome/css/font-awesome.min.css';
 // Import all app style sheets
 import './app.css'
 
+import './config/logger';
+import './config/plugins';
 import store from './store';
-
 import App from './App.vue'
 
 if (!ENV_PRODUCTION) {

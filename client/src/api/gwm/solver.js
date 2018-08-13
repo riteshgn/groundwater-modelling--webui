@@ -4,6 +4,7 @@
  * Solves Groundwater Equation (Darcy's law) for provided inputs
  */
 
+import Vue from 'vue';
 import nj from 'numjs';
 
 import NdarrayUtils from '../../utils/NdarrayUtils';
@@ -146,9 +147,9 @@ export default function ({
     } // while
 
     // print final solver stats
-    console.log(`['loopNum = ', ${ni}]`);
-    console.log(`(${ni},${max_err[ni]})`);
-    console.log(`['${new Date() - t},' seconds elapsed']`);
+    Vue.$log.debug(`['loopNum = ', ${ni}]`);
+    Vue.$log.debug(`(${ni},${max_err[ni]})`);
+    Vue.$log.debug(`['${new Date() - t},' seconds elapsed']`);
 
     // initialize arrays to store flow in x and y directions (qx and qy)
     let qx = nj.zeros(nj.array(h).shape).tolist();

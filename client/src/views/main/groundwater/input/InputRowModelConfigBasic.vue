@@ -55,7 +55,7 @@
                             class="form-control"
                             id="row-width"
                             :value="row.width"
-                            @input="updateRowWidth($event.target.value)">
+                            @input="updateRowWidth(parseInt($event.target.value, 10))">
                         <div class="input-group-append">
                             <span class="input-group-text" id="row-width-units">m</span>
                         </div>
@@ -84,7 +84,7 @@
                             class="form-control"
                             id="col-width"
                             :value="column.width"
-                            @input="updateColumnWidth($event.target.value)">
+                            @input="updateColumnWidth(parseInt($event.target.value, 10))">
                         <div class="input-group-append">
                             <span class="input-group-text" id="col-width-units">m</span>
                         </div>
@@ -104,7 +104,7 @@
                             id="grid-thickness"
                             :value="gridThickness"
                             :disabled="gridThicknessDisabled"
-                            @input="updateGridThickness($event.target.value)">
+                            @input="updateGridThickness(parseInt($event.target.value, 10))">
                         <div class="input-group-append">
                             <span class="input-group-text" id="grid-thickness-units">m</span>
                         </div>
@@ -127,7 +127,7 @@
                             class="form-control"
                             id="recharge-volume"
                             :value="recharge.volume"
-                            @input="updateRechargeVolume($event.target.value)">
+                            @input="updateRechargeVolume(parseFloat($event.target.value))">
                         <div class="input-group-append">
                             <span class="input-group-text" id="recharge-volume-units">m<sup>3</sup></span>
                         </div>
@@ -141,7 +141,7 @@
                         id="recharge-days"
                         class="form-control form-control-sm"
                         :value="recharge.days"
-                        @input="updateRechargePeriod($event.target.value)">
+                        @input="updateRechargePeriod(parseInt($event.target.value, 10))">
                 </column>
             </row>
             <!-- Grid row -->
@@ -171,14 +171,14 @@
             </row>
             <!-- Grid row -->
         </fieldset>
-
     </form>
 </template>
 
 <script>
 
     import { Row, Column } from 'mdbvue';
-    import { mapState, mapMutations } from 'vuex';
+    import { mapState } from 'vuex';
+    import { numeric } from 'vuelidate/lib/validators';
 
     const ConfigBasic = {
 
@@ -210,14 +210,64 @@
             }
         },
 
+        validations: {
+            row: {
+                width: { numeric }
+            },
+
+            column: {
+                width: { numeric }
+            },
+
+            gridThickness: { numeric },
+
+            recharge: {
+                volume: { numeric },
+
+                days: { numeric }
+            }
+        },
+
         methods: {
-            ...mapMutations('groundwater', {
-                updateRowWidth: 'UPDATE_ROW_WIDTH',
-                updateColumnWidth: 'UPDATE_COLUMN_WIDTH',
-                updateGridThickness: 'UPDATE_GRID_THICKNESS',
-                updateRechargeVolume: 'UPDATE_RECHARGE_VOLUME',
-                updateRechargePeriod: 'UPDATE_RECHARGE_PERIOD'
-            }),
+            updateRowWidth(newValue) {
+                this.$store.commit('groundwater/UPDATE_ROW_WIDTH', newValue);
+                this.$v.row.width.$touch();
+                if (!this.$v.row.width.numeric) {
+                    this.showErrorToaster('Row width must be a valid positive integer');
+                }
+            },
+
+            updateColumnWidth(newValue) {
+                this.$store.commit('groundwater/UPDATE_COLUMN_WIDTH', newValue);
+                this.$v.column.width.$touch();
+                if (!this.$v.column.width.numeric) {
+                    this.showErrorToaster('Column width must be a valid positive integer');
+                }
+            },
+
+            updateGridThickness(newValue) {
+                this.$store.commit('groundwater/UPDATE_GRID_THICKNESS', newValue);
+                this.$v.gridThickness.$touch();
+                if (!this.$v.gridThickness.numeric) {
+                    this.showErrorToaster('Grid Thickness must be a valid positive integer');
+                }
+            },
+
+            updateRechargeVolume(newValue) {
+                this.$store.commit('groundwater/UPDATE_RECHARGE_VOLUME', newValue);
+                this.$v.recharge.volume.$touch();
+                if (!this.$v.recharge.volume.numeric) {
+                    this.showErrorToaster('Recharge volume must be a valid positive decimal number');
+                }
+            },
+
+            updateRechargePeriod(newValue) {
+                this.$store.commit('groundwater/UPDATE_RECHARGE_PERIOD', newValue);
+                this.$v.recharge.days.$touch();
+                if (!this.$v.recharge.days.numeric) {
+                    this.showErrorToaster('Recharge Period must be a valid positive integer');
+                }
+            },
 
             updateLayout(newValue) {
                 this.$store.commit('groundwater/UPDATE_MODEL_LAYOUT', newValue);
@@ -241,6 +291,22 @@
 
             setSoilTypeSelection() {
                 this.soilTypes.forEach(soilType => soilType.selected = soilType.id === this.soilType);
+            },
+
+            showErrorToaster(message) {
+                const options = {
+                    type: 'error',
+                    icon: 'fa-exclamation-circle',
+                    position: 'bottom-right',
+                    action: [{
+                        text: 'ok',
+                        onClick : (e, toastObject) => {
+                            toastObject.goAway(0);
+                        }
+                    }]
+                };
+
+                this.$toasted.show(message, options);
             }
         },
 

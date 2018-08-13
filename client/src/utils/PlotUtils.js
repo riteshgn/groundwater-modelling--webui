@@ -1,5 +1,6 @@
 'use strict';
 
+import Vue from 'vue';
 import nj from 'numjs';
 import ndarray from 'ndarray';
 import gaussianFilter from 'ndarray-gaussian-filter';
@@ -42,6 +43,11 @@ export default apis;
  */
 async function prepare({row, column, recharge, gridThickness,
     modelLayout = 'map', soilType = 'random', constantHeads, wells}) {
+
+    Vue.$log.debug(`Inputs provided: ${JSON.stringify(
+        {row, column, recharge, gridThickness, modelLayout, soilType}
+    )}`);
+
     const { cellarea, delx, dely, delz, K, nrow, ncol, sizer }
         = _initialize({ row, column, gridThickness, modelLayout, soilType });
 
@@ -59,11 +65,13 @@ async function prepare({row, column, recharge, gridThickness,
     const cross_section_bool = modelLayout !== 'map';
     const rch_rate           = recharge.volume / recharge.days;    // recharge volume/day
 
+    Vue.$log.debug('Sending all inputs to the Plot API');
     const {h, ni, qx, qy} = await Plot.prepare({
         sizer, rch_rate, cross_section_bool, cellarea,
         nrow, ncol, conv_crit, SOR, maxLoops, delx, dely,
         delz, K, chd, well
     });
+    Vue.$log.debug('Received response from the Plot API');
 
     return {h, qx, qy, K};
 }

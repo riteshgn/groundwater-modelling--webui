@@ -49,11 +49,12 @@ legend {
     margin-bottom: 1rem;
     width: 50%;
     margin-left: 1rem;
-    background-color: #E8EAEB !important;
+    background-color: #E8EAEB !important; /*syracuse-light-gray*/
     color: #404040;
     font-weight: 401;
 }
 
+/** styles the fieldset legend's container */
 .legend-container {
     text-align: center;
     font-style: italic;
@@ -83,22 +84,48 @@ legend {
     color: #fff !important;
 }
 
+/** buttons should use the roboto fonts */
 .btn {
     font-family: "Roboto", sans-serif !important;
 }
 
+/** proper contrast ratio for the success colored button */
 .btn-success {
     background-color: #008a00 !important;
 }
 
+/** proper contrast ratio for the info colored button */
 .btn-info {
     background-color: #0080a6 !important;
 }
 
+/** proper contrast ratio for deep orange colored button */
 .btn-deep-orange {
-    background-color: #D44500 !important;
+    background-color: #D44500 !important; /*syracuse-orange*/
 }
 
+/** sizing of form labels */
 .col-form-label {
     font-size: 0.85rem;
+}
+
+/** proper contrast ratio for the toaster displaying error alerts */
+.toasted.error {
+    background-color: #e72400 !important;
+    color: #080400 !important;
+}
+
+/** proper font-sizing for the toaster action */
+.toasted .action {
+    font-size: 0.65rem !important;
+    margin-top: 7px !important;
+}
+
+/** this is required to override the ripple class added by mdbootstrap */
+.toasted .action.ripple {
+    position: static;
+    z-index: 10;
+    background: transparent;
+    opacity: 1;
+    transform: none;
 }
