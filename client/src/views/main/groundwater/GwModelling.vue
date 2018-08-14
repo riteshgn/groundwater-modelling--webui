@@ -3,7 +3,7 @@
     <section
         id="gw-modelling"
         ref="gw-modelling"
-        class="py-md-4">
+        class="my-md-5 py-md-5">
 
         <gwm-input-row></gwm-input-row>
         <gwm-output-row v-show="showOutput"></gwm-output-row>
@@ -31,13 +31,22 @@
             ...mapState('groundwater', ['showOutput'])
         },
 
+        methods: {
+            scrollToMe() {
+                this.$log.debug('scrolling to configure model section...');
+
+                scrollIntoView(this.$refs['gw-modelling'], {
+                    behavior: 'smooth',
+                    scrollMode: 'if-needed',
+                    block: 'start',
+                    inline: 'start',
+                });
+            }
+        },
+
         mounted() {
-            scrollIntoView(this.$refs['gw-modelling'], {
-                behavior: 'smooth',
-                scrollMode: 'if-needed',
-                block: 'center',
-                inline: 'center',
-            });
+            this.scrollToMe();
+            this.$bus.$on('app-start-modelling', this.scrollToMe);
         }
 
     }

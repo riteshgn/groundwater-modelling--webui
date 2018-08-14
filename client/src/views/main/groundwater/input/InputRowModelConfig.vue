@@ -48,7 +48,7 @@
 
 <script>
 
-    import { mapGetters, mapActions } from 'vuex';
+    import { mapGetters } from 'vuex';
     import { Card, CardBody, CardHeader, Btn } from 'mdbvue';
 
     import NavPillsVertical from '../../../../components/NavPillsVertical.vue';
@@ -93,7 +93,10 @@
         },
 
         methods: {
-            ...mapActions('groundwater', ['simulate']),
+            async simulate() {
+                await this.$store.dispatch('groundwater/simulate');
+                this.$bus.$emit('app-display-output', {sender: 'InputRowModelConfig.vue'});
+            },
 
             requiredIcon(ready = false) {
                 if (ready)

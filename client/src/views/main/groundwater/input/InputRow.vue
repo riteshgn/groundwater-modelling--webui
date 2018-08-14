@@ -1,6 +1,6 @@
 <template>
     <!-- Grid row -->
-    <row>
+    <row class="pt-md-5">
         <!--Model Configuration column-->
         <column md="6">
             <model-config></model-config>

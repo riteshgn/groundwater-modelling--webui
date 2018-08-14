@@ -30,17 +30,19 @@
             ...mapState('groundwater', ['simulationState'])
         },
 
-        watch: {
-            simulationState(newValue) {
-                if (newValue === 'COMPLETED') {
-                    scrollIntoView(this.$refs['gwm-output'], {
-                        behavior: 'smooth',
-                        scrollMode: 'if-needed',
-                        block: 'center',
-                        inline: 'center',
-                    });
-                }
+        methods: {
+            scrollToMe() {
+                scrollIntoView(this.$refs['gwm-output'], {
+                    behavior: 'smooth',
+                    scrollMode: 'if-needed',
+                    block: 'start',
+                    inline: 'start',
+                });
             }
+        },
+
+        created() {
+            this.$bus.$on('app-display-output', this.scrollToMe);
         }
     };
 

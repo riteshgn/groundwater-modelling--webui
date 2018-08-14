@@ -58,7 +58,6 @@
 
 <script>
 
-    import { mapMutations } from 'vuex';
     import { Row, Column, ViewWrapper, Btn } from 'mdbvue';
 
     import GroundwaterImage from './introduction.jpg';
@@ -79,9 +78,10 @@
         },
 
         methods: {
-            ...mapMutations({
-                startModelling: 'app/START_MODELLING'
-            })
+            startModelling() {
+                this.$store.commit('app/START_MODELLING');
+                this.$bus.$emit('app-start-modelling', {sender: 'AppIntro.vue'});
+            }
         }
 
     }

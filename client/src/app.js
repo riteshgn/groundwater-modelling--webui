@@ -6,6 +6,8 @@ import Vue from 'vue';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'mdbvue/build/css/mdb.css';
 import 'font-awesome/css/font-awesome.min.css';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import 'animate.css/animate.min.css';
 // Import all app style sheets
 import './app.css'
 

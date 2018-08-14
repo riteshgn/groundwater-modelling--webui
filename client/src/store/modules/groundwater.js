@@ -5,6 +5,15 @@ import __flatMap from 'lodash/flatMap';
 
 import PlotUtils from '../../utils/PlotUtils';
 
+const DEFAULTS = {
+    row: { count: 50, width: 10 },
+    column: { count: 50, width: 10 },
+    gridThickness: 100,
+    recharge: { volume: .3, days: 365 },
+    soilType: 'random',
+    modelLayout: 'map'
+}
+
 const store = {
     namespaced: true,
 
@@ -15,13 +24,13 @@ const store = {
         // array of class core/PlotSelection
         wells: [],
 
-        row: { count: 50, width: 10 },
+        row: { count: DEFAULTS.row.count, width: DEFAULTS.row.width },
 
-        column: { count: 50, width: 10 },
+        column: { count: DEFAULTS.column.count, width: DEFAULTS.column.width },
 
-        gridThickness: 100,
+        gridThickness: DEFAULTS.gridThickness,
 
-        recharge: { volume: .3, days: 365 }, // m/d - recharge volume/day
+        recharge: { volume: DEFAULTS.recharge.volume, days: DEFAULTS.recharge.days },
 
         contourMap: [],
 
@@ -33,10 +42,10 @@ const store = {
 
         soil: [],
 
-        soilType: 'random',
+        soilType: DEFAULTS.soilType,
 
         // options are map or cross_section
-        modelLayout: 'map'
+        modelLayout: DEFAULTS.modelLayout
     },
 
     getters: {
@@ -53,8 +62,13 @@ const store = {
         ADD_CONSTANT_HEAD_CONFIG,
         ADD_WELLS_CONFIG,
         CHANGE_SIMULATION_STATE,
+        HIDE_OUTPUT,
         REMOVE_CONSTANT_HEAD_CONFIG,
         REMOVE_WELLS_CONFIG,
+        RESET_MODEL_CONFIG,
+        RESET_MODEL_CONFIG_BASIC,
+        RESET_MODEL_CONFIG_CONSTANT_HEADS,
+        RESET_MODEL_CONFIG_WELLS,
         SAVE_CONTOUR_MAP,
         SAVE_QUIVER,
         SAVE_SOIL,
@@ -197,6 +211,41 @@ function UPDATE_ROW_WIDTH(state, value) {
 
 function UPDATE_SOIL_TYPE(state, value) {
     state.soilType = value;
+}
+
+function HIDE_OUTPUT(state) {
+    state.showOutput = false;
+    state.contourMap.splice(0);
+    state.quiver.x.splice(0);
+    state.quiver.y.splice(0);
+    state.soil.splice(0);
+}
+
+function RESET_MODEL_CONFIG(state) {
+    RESET_MODEL_CONFIG_BASIC(state);
+    RESET_MODEL_CONFIG_CONSTANT_HEADS(state);
+    RESET_MODEL_CONFIG_WELLS(state);
+    HIDE_OUTPUT(state);
+}
+
+function RESET_MODEL_CONFIG_BASIC(state) {
+    state.row.count = DEFAULTS.row.count;
+    state.row.width = DEFAULTS.row.width;
+    state.column.count = DEFAULTS.column.count;
+    state.column.width = DEFAULTS.column.width;
+    state.gridThickness = DEFAULTS.gridThickness;
+    state.recharge.volumne = DEFAULTS.recharge.volumne;
+    state.recharge.days = DEFAULTS.recharge.days;
+    state.soilType = DEFAULTS.soilType;
+    state.modelLayout = DEFAULTS.modelLayout;
+}
+
+function RESET_MODEL_CONFIG_CONSTANT_HEADS(state) {
+    state.constantHeads.splice(0);
+}
+
+function RESET_MODEL_CONFIG_WELLS(state) {
+    state.wells.splice(0);
 }
 
 //////////////////////////////////////////////////////////////////////
