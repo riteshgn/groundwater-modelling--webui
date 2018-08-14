@@ -308,6 +308,7 @@
         created() {
             // set the default selection for the soil type dropdown
             this.setSoilTypeSelection();
+            this.$bus.$on('app-start-modelling', this.setSoilTypeSelection);
         }
 
     }
