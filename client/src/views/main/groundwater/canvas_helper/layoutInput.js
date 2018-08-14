@@ -1,14 +1,12 @@
 'use strict';
 
 const layoutInput = {
+    font: { color: '#212529' },
+    titlefont: { size: 14 },
     showlegend: true,
     legend: _composeLegend(),
     xaxis: _composeXaxisOptions(),
     yaxis: _composeYaxisOptions(),
-    // dragmode: 'select',
-    // hovermode: 'closest',
-    // width: 450,
-    // height: 350,
     margin: {l: 50, r: 0, b: 50, t: 25},
     autosize: true
 }
@@ -19,25 +17,19 @@ export default layoutInput;
 
 function _composeLegend() {
     return {
-        font: {
-          size: 10,
-          color: '#212529'
-        }
+        font: { size: 10 }
     };
 }
 
 function _composeXaxisOptions() {
     return {
+        titlefont: { size: 12 },
         range: [0, 50],
         nticks: 50,
         showgrid: true,
         ticklen: 10,
         tickcolor: "#dedede",
-        tickfont: {
-            family: 'Roboto',
-            size: 12,
-            color: '#212529',
-        },
+        tickfont: { size: 10 },
         zeroline: false,
         showline: true,
         linecolor: '#7e7e7e',
@@ -47,16 +39,13 @@ function _composeXaxisOptions() {
 
 function _composeYaxisOptions() {
     return {
+        titlefont: { size: 12 },
         range: [0, 50],
         nticks: 50,
         showgrid: true,
         ticklen: 10,
         tickcolor: "#dedede",
-        tickfont: {
-            family: 'Roboto',
-            size: 12,
-            color: '#212529'
-        },
+        tickfont: { size: 10 },
         zeroline: false,
         showline: true,
         linecolor: '#7e7e7e',

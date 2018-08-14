@@ -255,7 +255,7 @@
                 [
                     { x: {from: 0, to: 20, range: true}, y: {from: 5, range: false}, value: 20 },
                     { x: {from: 20, range: false}, y: {from: 6, to: 14, range: true}, value: 20 },
-                    { x: {from: 21, to: 50, range: true}, y: {from: 14, range: false}, value: 20 },
+                    { x: {from: 21, to: 49, range: true}, y: {from: 14, range: false}, value: 20 },
                 ].forEach(config => {
                     this.$store.commit('groundwater/ADD_CONSTANT_HEAD_CONFIG', PlotSelection.make(config));
                 });

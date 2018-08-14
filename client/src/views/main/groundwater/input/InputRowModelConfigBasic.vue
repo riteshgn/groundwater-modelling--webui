@@ -119,19 +119,14 @@
 
             <!-- Grid row -->
             <row>
-                <label for="recharge-volume" class="col-sm-3 col-form-label">Volume</label>
+                <label for="recharge-volume" class="col-sm-3 col-form-label">Volume (m<sup>3</sup>)</label>
                 <column sm="3">
-                    <div class="input-group input-group-sm" title="Recharge volume in meter cubed">
-                        <input
-                            type="number"
-                            class="form-control"
-                            id="recharge-volume"
-                            :value="recharge.volume"
-                            @input="updateRechargeVolume(parseFloat($event.target.value))">
-                        <div class="input-group-append">
-                            <span class="input-group-text" id="recharge-volume-units">m<sup>3</sup></span>
-                        </div>
-                    </div>
+                    <input
+                        type="number"
+                        class="form-control form-control-sm"
+                        id="recharge-volume"
+                        :value="recharge.volume"
+                        @input="updateRechargeVolume(parseFloat($event.target.value))">
                 </column>
 
                 <label for="recharge-days" class="col-sm-3 col-form-label">Period (Days)</label>
@@ -178,7 +173,7 @@
 
     import { Row, Column } from 'mdbvue';
     import { mapState } from 'vuex';
-    import { numeric } from 'vuelidate/lib/validators';
+    import { numeric, decimal } from 'vuelidate/lib/validators';
 
     const ConfigBasic = {
 
@@ -222,7 +217,7 @@
             gridThickness: { numeric },
 
             recharge: {
-                volume: { numeric },
+                volume: { decimal },
 
                 days: { numeric }
             }
@@ -256,7 +251,7 @@
             updateRechargeVolume(newValue) {
                 this.$store.commit('groundwater/UPDATE_RECHARGE_VOLUME', newValue);
                 this.$v.recharge.volume.$touch();
-                if (!this.$v.recharge.volume.numeric) {
+                if (!this.$v.recharge.volume.decimal) {
                     this.showErrorToaster('Recharge volume must be a valid positive decimal number');
                 }
             },

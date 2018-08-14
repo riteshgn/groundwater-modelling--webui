@@ -23,7 +23,7 @@
 
 <script>
 
-    import { mapGetters } from 'vuex';
+    import { mapGetters, mapState } from 'vuex';
     import { Card, CardBody, CardHeader } from 'mdbvue';
 
     import PlotlyGraph from '../../../../components/PlotlyGraph.vue';
@@ -35,7 +35,6 @@
 
         data() {
             return {
-                layout: CanvasHelper.layoutInput,
                 constantHeadsTrace: CanvasHelper.traces.EMPTY_CONSTANT_HEADS,
                 wellsTrace: CanvasHelper.traces.EMPTY_WELLS,
                 rechargeTrace: CanvasHelper.traces.DEFAULT_RECHARGE_CROSS_SECTIONAL
@@ -50,7 +49,16 @@
         },
 
         computed: {
-            ...mapGetters('groundwater', ['constantHeadsSelection', 'wellsSelection']),
+            ...mapGetters('groundwater', ['canvasTitles', 'constantHeadsSelection', 'wellsSelection']),
+
+            layout() {
+                const layout = Object.assign({}, CanvasHelper.layoutInput);
+                layout.title = this.canvasTitles.mainTitle
+                layout.xaxis.title = this.canvasTitles.xAxisTitle;
+                layout.yaxis.title = this.canvasTitles.yAxisTitle;
+
+                return layout;
+            },
 
             constantHeads() {
                 return Object.assign({}, this.constantHeadsTrace, this.constantHeadsSelection);

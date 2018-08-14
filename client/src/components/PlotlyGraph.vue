@@ -21,6 +21,13 @@
                 );
             },
 
+            updateLayout() {
+                Plotly.relayout(
+                    this.$refs['plotly-container'],
+                    this.layout
+                );
+            },
+
             initMethods() {
                 this.__resizeListener = debounce(this.renderPlot, 200)
                 window.addEventListener('resize', this.__resizeListener)
@@ -31,7 +38,14 @@
             traces: {
                 deep: true,
                 handler() {
-                    this.renderPlot()
+                    this.renderPlot();
+                }
+            },
+
+            layout: {
+                deep: true,
+                handler() {
+                    this.updateLayout();
                 }
             }
         },

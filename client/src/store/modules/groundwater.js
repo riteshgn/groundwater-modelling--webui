@@ -49,13 +49,14 @@ const store = {
     },
 
     getters: {
+        basicConfigReady,
+        canvasTitles,
+        constantHeadsReady,
         constantHeadsSelection,
         stringifiedHeads,
         stringifiedWells,
-        wellsSelection,
-        basicConfigReady,
-        constantHeadsReady,
-        wellsReady
+        wellsReady,
+        wellsSelection
     },
 
     mutations: {
@@ -138,6 +139,23 @@ function constantHeadsReady(state) {
 
 function wellsReady(state) {
     return state.wells.length > 0;
+}
+
+function canvasTitles(state) {
+    const view = state.modelLayout === 'map' ? 'Map' : 'Cross Section';
+    const rechargeRate = (state.recharge.volume / state.recharge.days);
+
+    const mainTitle = [
+        `Layout: ${view}`,
+        `Height: ${(state.row.count * state.row.width)}m`,
+        `Width: ${(state.column.count * state.column.width)}m`,
+        `Recharge Rate: ${rechargeRate.toExponential(3)}`
+    ].join(' / ');
+
+    const xAxisTitle = 'Distance (meters)';
+    const yAxisTitle = state.modelLayout === 'map' ? xAxisTitle : 'Elevation (meters)';
+
+    return { mainTitle, xAxisTitle, yAxisTitle };
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -234,7 +252,7 @@ function RESET_MODEL_CONFIG_BASIC(state) {
     state.column.count = DEFAULTS.column.count;
     state.column.width = DEFAULTS.column.width;
     state.gridThickness = DEFAULTS.gridThickness;
-    state.recharge.volumne = DEFAULTS.recharge.volumne;
+    state.recharge.volume = DEFAULTS.recharge.volume;
     state.recharge.days = DEFAULTS.recharge.days;
     state.soilType = DEFAULTS.soilType;
     state.modelLayout = DEFAULTS.modelLayout;

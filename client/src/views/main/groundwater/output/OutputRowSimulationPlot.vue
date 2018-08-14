@@ -4,7 +4,7 @@
 
         <!-- Card header -->
         <card-header class="text-center">
-            Heads & Flow Vectors (Map View)
+            Heads
         </card-header>
         <!-- /.Card header -->
 
@@ -33,10 +33,9 @@
 
         data() {
             return {
-                layout: CanvasHelper.layoutOutput,
-                constantHeadsTrace: CanvasHelper.traces.EMPTY_CONSTANT_HEADS,
-                wellsTrace: CanvasHelper.traces.EMPTY_WELLS,
-                contourTrace: CanvasHelper.traces.EMPTY_CONTOUR
+                displayedConstantHeadsSelection: CanvasHelper.traces.EMPTY_CONSTANT_HEADS,
+                displayedWellsSelection: CanvasHelper.traces.EMPTY_WELLS,
+                displayedContourMap: CanvasHelper.traces.EMPTY_CONTOUR
             }
         },
 
@@ -48,25 +47,35 @@
         },
 
         computed: {
-            ...mapGetters('groundwater', ['constantHeadsSelection', 'wellsSelection']),
+            ...mapGetters('groundwater', ['canvasTitles', 'constantHeadsSelection', 'wellsSelection']),
 
-            ...mapState('groundwater', ['contourMap']),
+            ...mapState('groundwater', ['contourMap', 'quiver']),
 
-            constantHeads() {
-                return Object.assign({}, this.constantHeadsTrace, this.constantHeadsSelection);
+            layout() {
+                const layout = Object.assign({}, CanvasHelper.layoutOutput);
+                layout.title = this.canvasTitles.mainTitle
+                layout.xaxis.title = this.canvasTitles.xAxisTitle;
+                layout.yaxis.title = this.canvasTitles.yAxisTitle;
+
+                return layout;
             },
 
-            wells() {
-                return Object.assign({}, this.wellsTrace, this.wellsSelection);
+            constantHeadsTrace() {
+                return Object.assign({}, this.displayedConstantHeadsSelection, this.constantHeadsSelection);
             },
 
-            contour() {
-                return Object.assign({}, this.contourTrace, {z: this.contourMap});
+            wellsTrace() {
+                return Object.assign({}, this.displayedWellsSelection, this.wellsSelection);
+            },
+
+            contourTrace() {
+                return Object.assign({}, this.displayedContourMap, {z: this.contourMap});
             },
 
             traces() {
-                return [this.constantHeads, this.wells, this.contour];
+                return [this.constantHeadsTrace, this.wellsTrace, this.contourTrace];
             }
+
         }
 
     }
