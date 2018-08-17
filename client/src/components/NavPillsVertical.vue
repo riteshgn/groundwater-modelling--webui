@@ -3,9 +3,11 @@
         <div class="col-md-3">
             <div class="list-group list-group-flush">
                 <a
+                    :tabindex="0"
                     :class="{'list-group-item': true, 'active': tab.active, 'waves-effect': true}"
                     v-for="tab in tabs"
-                    @click="switchTab(tab)">
+                    @click="switchTab(tab)"
+                    @keyup.enter.space="switchTab(tab)">
                     <span v-html="tab.name"></span>
                 </a>
             </div>

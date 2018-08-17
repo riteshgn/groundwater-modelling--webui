@@ -128,12 +128,27 @@
                         color="primary"
                         size="sm"
                         class="waves-effect"
+                        aria-label="SaveConstantHeads"
+                        aria-describedby="descriptionSaveConstantHeads"
                         @click.native.prevent="saveConfig">Save</btn>
+                    <div
+                        id="descriptionSaveConstantHeads"
+                        class="sr-only">
+                        Clicking the "Save" button adds the x & y directional selection and corresponding value for constant heads to the model canvas.
+                    </div>
+
                     <btn
                         color="outline-primary"
                         size="sm"
                         class="waves-effect"
+                        aria-label="RandomizeConstantHeads"
+                        aria-describedby="descriptionRandomizeConstantHeads"
                         @click.native.prevent="randomize">Randomize</btn>
+                    <div
+                        id="descriptionRandomizeConstantHeads"
+                        class="sr-only">
+                        Creates random constant heads on the model canvas.
+                    </div>
                 </column>
             </row>
             <!-- Grid row -->

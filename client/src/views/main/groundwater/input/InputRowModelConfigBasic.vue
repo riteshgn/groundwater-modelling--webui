@@ -10,6 +10,7 @@
                 <column sm="9">
                     <div class="custom-control custom-radio custom-control-inline">
                         <input
+                            ref="config-basic-model-layout-radio-map"
                             type="radio"
                             class="custom-control-input"
                             id="layout-style-map"
@@ -309,6 +310,10 @@
             // set the default selection for the soil type dropdown
             this.setSoilTypeSelection();
             this.$bus.$on('app-start-modelling', this.setSoilTypeSelection);
+        },
+
+        mounted() {
+            this.$refs['config-basic-model-layout-radio-map'].focus();
         }
 
     }

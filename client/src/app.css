@@ -90,23 +90,20 @@ legend {
 }
 
 /** proper contrast ratio for the success colored button */
-.btn-success {
-    background-color: #008a00 !important;
-}
+.btn-success { background-color: #008a00 !important; }
+.btn-success:hover { background-color: #00e25b !important; }
+.btn-success:focus, .btn-success:active, .btn-success.active { background-color: #00e25b !important; }
 
 /** proper contrast ratio for the info colored button */
-.btn-info {
-    background-color: #0080a6 !important;
-}
+.btn-info { background-color: #0080a6 !important; }
+.btn-info:hover { background-color: #4abde8 !important; }
+.btn-info:focus, .btn-info:active, .btn-info.active { background-color: #4abde8 !important; }
 
 /** proper contrast ratio for deep orange colored button */
-.btn-deep-orange {
-    background-color: #D44500 !important; /*syracuse-orange*/
-}
-
-.btn:disabled .btn-deep-orange {
-    background-color: #bc5b00 !important;
-}
+.btn-deep-orange { background-color: #D44500 !important; /*syracuse-orange*/ }
+.btn-deep-orange:hover { background-color: #ff835d !important; }
+.btn-deep-orange:focus, .btn-deep-orange:active, .btn-deep-orange.active { background-color: #ff835d !important; }
+.btn:disabled .btn-deep-orange { background-color: #bc5b00 !important; }
 
 /** styles the asterix denoting required inputs for a navigation pill */
 .required-pill-asterix {

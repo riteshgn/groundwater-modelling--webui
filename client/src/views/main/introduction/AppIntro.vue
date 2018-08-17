@@ -39,12 +39,30 @@
                     color="success"
                     size="md"
                     class="waves-effect"
+                    :tabindex="tabIndexForButtons"
+                    aria-label="StartModelling"
+                    aria-describedby="descriptionStartModelling"
                     @click.native="startModelling">Start Modelling</btn>
+
+                <div
+                    id="descriptionStartModelling"
+                    class="sr-only">
+                    Clicking the "Start Modelling" button will make the groundwater-model configuration section visibile and the main view will automatically scroll to the model configuration section.
+                </div>
 
                 <btn
                     color="info"
                     size="md"
+                    :tabindex="tabIndexForButtons"
+                    aria-label="StartTutorial"
+                    aria-describedby="descriptionStartTutorial"
                     class="waves-effect">New User ?</btn>
+
+                <div
+                    id="descriptionStartTutorial"
+                    class="sr-only">
+                    Clicking the "New User" button will make launch the usage guide for this system.
+                </div>
                 <!-- Do more buttons -->
 
             </column>
@@ -66,7 +84,8 @@
 
         data() {
             return {
-                GroundwaterImage
+                GroundwaterImage,
+                tabIndexForButtons: 0
             }
         },
 
@@ -79,6 +98,7 @@
 
         methods: {
             startModelling() {
+                this.tabIndexForButtons = -1;
                 this.$store.commit('app/START_MODELLING');
                 this.$bus.$emit('app-start-modelling', {sender: 'AppIntro.vue'});
             }

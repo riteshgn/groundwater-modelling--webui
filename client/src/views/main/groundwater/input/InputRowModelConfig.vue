@@ -12,13 +12,22 @@
         <!--Card content-->
         <card-body>
             <nav-pills>
-                <tab-pane :name="pillNameBasic" :selected="true">
+                <tab-pane
+                    :name="pillNameBasic"
+                    :selected="tabSelections.basic"
+                    @tab-selected="(selected) => tabSelections.basic = selected">
                     <config-basic></config-basic>
                 </tab-pane>
-                <tab-pane :name="pillNameConstantHeads">
+                <tab-pane
+                    :name="pillNameConstantHeads"
+                    :selected="tabSelections.heads"
+                    @tab-selected="(selected) => tabSelections.heads = selected">
                     <config-constant-heads></config-constant-heads>
                 </tab-pane>
-                <tab-pane :name="pillNameWells">
+                <tab-pane
+                    :name="pillNameWells"
+                    :selected="tabSelections.wells"
+                    @tab-selected="(selected) => tabSelections.wells = selected">
                     <config-wells></config-wells>
                 </tab-pane>
             </nav-pills>
@@ -36,7 +45,15 @@
                     size="md"
                     class="waves-effect"
                     :disabled="!allReady"
+                    aria-label="Simulate"
+                    aria-describedby="descriptionSimulate"
                     @click.native="simulate">Simulate</btn>
+
+                <div
+                    id="descriptionSimulate"
+                    class="sr-only">
+                    Clicking the "Simulate" button will execute the configured groundwater-model. The simulation output will be visible and the main view will automatically scroll to the output section.
+                </div>
             </div>
             <!-- Footer -->
         </card-body>
@@ -59,6 +76,16 @@
     import ConfigWells from './InputRowModelConfigWells.vue';
 
     const ModelConfig = {
+
+        data() {
+            return {
+                tabSelections: {
+                    basic: true,
+                    heads: false,
+                    wells: false
+                }
+            }
+        },
 
         components: {
             Card,
@@ -102,7 +129,19 @@
                 if (ready)
                     return '';
                 return ' <div class="d-inline m-0 p-0 required-pill-asterix"><i class="fa fa-asterisk"></i></div>';
+            },
+
+            selectTab(tabId) {
+                this.$log.debug(`Switching the tab to ${tabId}`);
+                for (let type in this.tabSelections) {
+                    this.tabSelections[type] = type === tabId;
+                }
             }
+        },
+
+        mounted() {
+            this.selectTab('basic');
+            this.$bus.$on('app-start-modelling', () => this.selectTab('basic'));
         }
 
     }

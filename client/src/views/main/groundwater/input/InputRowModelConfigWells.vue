@@ -128,12 +128,28 @@
                         color="primary"
                         size="sm"
                         class="waves-effect"
+                        aria-label="SaveWells"
+                        aria-describedby="descriptionSaveWells"
                         @click.native.prevent="saveConfig">Save</btn>
+                    <div
+                        id="descriptionSaveWells"
+                        class="sr-only">
+                        Clicking the "Save" button adds the x & y directional selection and corresponding value for wells to the model canvas.
+                    </div>
+
                     <btn
                         color="outline-primary"
                         size="sm"
                         class="waves-effect"
+                        aria-label="RandomizeWells"
+                        aria-describedby="descriptionRandomizeWells"
                         @click.native.prevent="randomize">Randomize</btn>
+                    <div
+                        id="descriptionRandomizeWells"
+                        class="sr-only">
+                        Creates random wells on the model canvas.
+                    </div>
+
                 </column>
             </row>
             <!-- Grid row -->

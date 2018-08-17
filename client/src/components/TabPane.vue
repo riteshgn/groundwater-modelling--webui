@@ -1,5 +1,5 @@
 <template>
-    <div class="tab-content" v-show="active">
+    <div class="tab-content" v-show="tabSelected">
         <div class="tab-pane fade show active" role="tabpanel">
             <slot></slot>
         </div>
@@ -14,12 +14,34 @@
         },
 
         data() {
-            return { active: false };
+            return {
+                tabSelected: this.selected
+            }
         },
 
-        mounted() {
-            this.active = this.selected;
+        computed: {
+            active: {
+                get() {
+                    return this.tabSelected;
+                },
+
+                set(newValue) {
+                    this.tabSelected = newValue;
+                    this.$emit('tab-selected', newValue);
+                }
+            }
+        },
+
+        watch: {
+            selected: {
+                handler: function(newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        this.tabSelected = newValue;
+                    }
+                }
+            }
         }
+
     }
 
     export default TabPane;
