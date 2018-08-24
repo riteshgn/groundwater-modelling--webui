@@ -322,13 +322,4 @@
         padding: 0.1rem;
         -ms-overflow-style: -ms-autohiding-scrollbar;
     }
-
-    .custom-control-inline {
-        padding-top: 0.25rem;
-    }
-
-    .custom-control-label {
-        font-size: 0.85rem;
-        padding-top: 0.2rem;
-    }
 </style>

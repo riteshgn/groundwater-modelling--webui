@@ -14,20 +14,20 @@
             <nav-pills>
                 <tab-pane
                     :name="pillNameBasic"
-                    :selected="tabSelections.basic"
-                    @tab-selected="(selected) => tabSelections.basic = selected">
+                    :selected="tabSelection.basic"
+                    @tab-selected="SET_TAB_SELECTION_BASIC">
                     <config-basic></config-basic>
                 </tab-pane>
                 <tab-pane
                     :name="pillNameConstantHeads"
-                    :selected="tabSelections.heads"
-                    @tab-selected="(selected) => tabSelections.heads = selected">
+                    :selected="tabSelection.heads"
+                    @tab-selected="SET_TAB_SELECTION_HEADS">
                     <config-constant-heads></config-constant-heads>
                 </tab-pane>
                 <tab-pane
                     :name="pillNameWells"
-                    :selected="tabSelections.wells"
-                    @tab-selected="(selected) => tabSelections.wells = selected">
+                    :selected="tabSelection.wells"
+                    @tab-selected="SET_TAB_SELECTION_WELLS">
                     <config-wells></config-wells>
                 </tab-pane>
             </nav-pills>
@@ -65,7 +65,7 @@
 
 <script>
 
-    import { mapGetters } from 'vuex';
+    import { mapGetters, mapState, mapMutations } from 'vuex';
     import { Card, CardBody, CardHeader, Btn } from 'mdbvue';
 
     import NavPillsVertical from '../../../../components/NavPillsVertical.vue';
@@ -77,29 +77,20 @@
 
     const ModelConfig = {
 
-        data() {
-            return {
-                tabSelections: {
-                    basic: true,
-                    heads: false,
-                    wells: false
-                }
-            }
-        },
-
         components: {
             Card,
             CardBody,
             CardHeader,
             Btn,
             'nav-pills': NavPillsVertical,
-            'tab-pane': TabPane,
-            'config-basic': ConfigBasic,
-            'config-constant-heads': ConfigConstantHeads,
-            'config-wells': ConfigWells
+            TabPane,
+            ConfigBasic,
+            ConfigConstantHeads,
+            ConfigWells
         },
 
         computed: {
+            ...mapState('app', ['tabSelection']),
             ...mapGetters('groundwater', ['basicConfigReady', 'constantHeadsReady', 'wellsReady']),
 
             pillNameBasic() {
@@ -120,6 +111,12 @@
         },
 
         methods: {
+            ...mapMutations('app', [
+                'SET_TAB_SELECTION_BASIC',
+                'SET_TAB_SELECTION_HEADS',
+                'SET_TAB_SELECTION_WELLS'
+            ]),
+
             async simulate() {
                 await this.$store.dispatch('groundwater/simulate');
                 this.$bus.$emit('app-display-output', {sender: 'InputRowModelConfig.vue'});

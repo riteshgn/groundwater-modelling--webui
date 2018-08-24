@@ -1,8 +1,5 @@
 'use strict';
 
-import __range from 'lodash/range';
-import __flatMap from 'lodash/flatMap';
-
 import PlotUtils from '../../utils/PlotUtils';
 
 const DEFAULTS = {
@@ -18,34 +15,48 @@ const store = {
     namespaced: true,
 
     state: {
-        // array of class core/PlotSelection
-        constantHeads: [],
+        // options are map or cross_section
+        modelLayout: DEFAULTS.modelLayout,
 
-        // array of class core/PlotSelection
-        wells: [],
-
+        // row definition for the grid
         row: { count: DEFAULTS.row.count, width: DEFAULTS.row.width },
 
+        // column definition for the grid
         column: { count: DEFAULTS.column.count, width: DEFAULTS.column.width },
 
+        // thickness of the grid
         gridThickness: DEFAULTS.gridThickness,
 
+        // recharge parameters required to compute the recharge rate
         recharge: { volume: DEFAULTS.recharge.volume, days: DEFAULTS.recharge.days },
 
-        contourMap: [],
-
-        showOutput: false,
-
-        simulationState: 'INIT',
-
-        quiver: { x:[], y:[] },
-
-        soil: [],
-
+        // selected soil type
         soilType: DEFAULTS.soilType,
 
-        // options are map or cross_section
-        modelLayout: DEFAULTS.modelLayout
+        // computed hydraulic constants array based on selected soil type
+        soil: [],
+
+        // array of class core/PlotSelection defining the head selections
+        constantHeads: [],
+
+        // array of class core/PlotSelection defining the well selections
+        wells: [],
+
+        // value of the selection made on the canvas
+        canvasSelectionValue: null,
+
+        // flag defining if the output should be displayed (TODO: move to app store?)
+        showOutput: false,
+
+        // maintains the execution state of the simulation.
+        // possible values: 'INIT', 'IN_PROGRESS' & 'COMPLETED'
+        simulationState: 'INIT',
+
+        // output heads
+        contourMap: [],
+
+        // output quiver coordinates
+        quiver: { x:[], y:[] }
     },
 
     getters: {
@@ -109,19 +120,11 @@ function stringifiedWells(state) {
 }
 
 function constantHeadsSelection(state) {
-    return (
-        state.constantHeads
-            .map(_extrapolatePoints)
-            .reduce(_concatExtrapolation, {x: [], y: [], values: []})
-    );
+    return PlotUtils.processSelections(state.constantHeads);
 }
 
 function wellsSelection(state) {
-    return (
-        state.wells
-            .map(_extrapolatePoints)
-            .reduce(_concatExtrapolation, {x: [], y: [], values: []})
-    );
+    return PlotUtils.processSelections(state.wells);
 }
 
 function basicConfigReady(state) {
@@ -293,38 +296,6 @@ async function simulate({ state, commit, getters }) {
 }
 
 //////////////////////////////////////////////////////////////////////
-
-function _extrapolatePoints(head) {
-    let xs = [head.x.from];
-    if (head.x.range) {
-        xs = __range(head.x.from, head.x.to + 1);
-    }
-
-    let ys = [head.y.from];
-    if (head.y.range) {
-        ys = __range(head.y.from, head.y.to + 1);
-    }
-
-    let x = xs;
-    let y = ys;
-
-    if (xs.length > 1) {
-        x = __flatMap(ys, () => xs);
-        y = __flatMap(ys, (y) => Array(xs.length).fill(y));
-    } else if (ys.length > 1) {
-        x = __flatMap(xs, (x) => Array(ys.length).fill(x));
-        y = __flatMap(xs, () => ys);
-    }
-
-    return {x, y, values: Array(x.length).fill(head.value)};
-}
-
-function _concatExtrapolation(out, points) {
-    out.x = out.x.concat(points.x);
-    out.y = out.y.concat(points.y);
-    out.values = out.values.concat(points.values);
-    return out;
-}
 
 function _isValidModelLayout(layout) {
     return ['map', 'cross_section'].indexOf(layout) !== -1;

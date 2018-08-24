@@ -137,3 +137,14 @@ legend {
     opacity: 1;
     transform: none;
 }
+
+/** styling checkbox & radio buttons */
+.custom-control-inline {
+    padding-top: 0.25rem;
+}
+
+/** styling checkbox & radio button labels */
+.custom-control-label {
+    font-size: 0.85rem;
+    padding-top: 0.2rem;
+}

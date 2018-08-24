@@ -4,6 +4,8 @@ import Vue from 'vue';
 import nj from 'numjs';
 import ndarray from 'ndarray';
 import gaussianFilter from 'ndarray-gaussian-filter';
+import __range from 'lodash/range';
+import __flatMap from 'lodash/flatMap';
 
 import Plot from '../api/plot';
 import NdarrayUtils from './NdarrayUtils';
@@ -29,6 +31,7 @@ const connectivity_y = 1;
 
 // Exposed APIs
 const apis = {
+    processSelections,
     prepare
 }
 
@@ -76,7 +79,59 @@ async function prepare({row, column, recharge, gridThickness,
     return {h, qx, qy, K};
 }
 
+/**
+ * Converts an array of core/PlotSelection to points required by a
+ * plotly trace configuration
+ *
+ * example:
+ *     { x: { from: 0, to: 1, range: true },
+ *       y: { from: 10, range: false},
+ *       value: 50 }
+ *
+ *     is converted to =>
+ *     { x: [0, 1], y: [10, 10], values: [50, 50]}
+ */
+function processSelections(plotSelections) {
+    return (
+        plotSelections
+            .map(_extrapolatePoints)
+            .reduce(_concatExtrapolation, {x: [], y: [], values: []})
+    );
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
+
+function _concatExtrapolation(out, points) {
+    out.x = out.x.concat(points.x);
+    out.y = out.y.concat(points.y);
+    out.values = out.values.concat(points.values);
+    return out;
+}
+
+function _extrapolatePoints(head) {
+    let xs = [head.x.from];
+    if (head.x.range) {
+        xs = __range(head.x.from, head.x.to + 1);
+    }
+
+    let ys = [head.y.from];
+    if (head.y.range) {
+        ys = __range(head.y.from, head.y.to + 1);
+    }
+
+    let x = xs;
+    let y = ys;
+
+    if (xs.length > 1) {
+        x = __flatMap(ys, () => xs);
+        y = __flatMap(ys, (y) => Array(xs.length).fill(y));
+    } else if (ys.length > 1) {
+        x = __flatMap(xs, (x) => Array(ys.length).fill(x));
+        y = __flatMap(xs, () => ys);
+    }
+
+    return {x, y, values: Array(x.length).fill(head.value)};
+}
 
 function _generateRandomKField(sizer) {
     // 1. randomly assign int value of 1-4 to an array the size of the model domain
