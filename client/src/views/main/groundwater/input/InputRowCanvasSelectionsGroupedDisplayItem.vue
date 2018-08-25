@@ -31,7 +31,7 @@
 
     import { Row, Column, Card, CardBody, CardTitle, CardText, Btn, Badge } from 'mdbvue';
 
-    const ConfigSelections = {
+    const GroupedDisplayItem = {
 
         props: {
             selections: { type: Array, required: true }
@@ -50,7 +50,7 @@
 
     };
 
-    export default ConfigSelections;
+    export default GroupedDisplayItem;
 
 </script>
 

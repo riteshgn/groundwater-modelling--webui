@@ -4,7 +4,7 @@ const DEFAULTS = {
     showIntro: true,
     showModellingSystem: false,
     editableCanvas: false,
-    canvasSelectionType: 'points',
+    canvasSelectionType: 'POINT',
     tabSelection: { basic: true,
                     heads: false,
                     wells: false }

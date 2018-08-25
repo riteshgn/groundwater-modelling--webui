@@ -58,6 +58,7 @@
 
     .list-group-item {
         font-size: 0.65rem;
+        color: #0072ee;
     }
 
     .list-group-item.active {

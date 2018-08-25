@@ -46,6 +46,7 @@
 
         mounted() {
             this.scrollToMe();
+            this.$log.debug('GwModelling.vue | mounted | registering callback to app-start-modelling event...');
             this.$bus.$on('app-start-modelling', this.scrollToMe);
         }
 

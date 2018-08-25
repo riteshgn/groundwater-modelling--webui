@@ -31,7 +31,7 @@ const connectivity_y = 1;
 
 // Exposed APIs
 const apis = {
-    processSelections,
+    convertPlotSelectionToPlotlyData,
     prepare
 }
 
@@ -91,7 +91,7 @@ async function prepare({row, column, recharge, gridThickness,
  *     is converted to =>
  *     { x: [0, 1], y: [10, 10], values: [50, 50]}
  */
-function processSelections(plotSelections) {
+function convertPlotSelectionToPlotlyData(plotSelections) {
     return (
         plotSelections
             .map(_extrapolatePoints)

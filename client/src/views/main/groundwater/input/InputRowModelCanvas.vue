@@ -13,7 +13,8 @@
         <card-body>
             <plotly-graph
                 :traces="traces"
-                :layout="layout"></plotly-graph>
+                :layout="layout"
+                @p-d3-click="handleClick"></plotly-graph>
         </card-body>
         <!--/.Card content-->
 
@@ -29,7 +30,6 @@
     import PlotlyGraph from '../../../../components/PlotlyGraph.vue';
 
     import CanvasHelper from '../canvas_helper';
-
 
     const ModelCanvas = {
 
@@ -49,6 +49,8 @@
         },
 
         computed: {
+            ...mapState('app', ['editableCanvas', 'canvasSelectionType', 'tabSelection']),
+            ...mapGetters('app', ['selectedConfigurationTab']),
             ...mapGetters('groundwater', ['canvasTitles', 'constantHeadsSelection', 'wellsSelection']),
 
             layout() {
@@ -71,7 +73,44 @@
             traces() {
                 return [this.rechargeTrace, this.constantHeads, this.wells];
             }
+        },
+
+        methods: {
+            canPerformClickActions(coordinates) {
+                if (! this.editableCanvas) {
+                    this.$log.debug('Canvas is not editable !');
+                    return false;
+                }
+
+                if ( coordinates.outOfRange.x || coordinates.outOfRange.y ) {
+                    this.$log.debug('Click placed outside bound range', JSON.stringify(coordinates.outOfRange));
+                    return false;
+                }
+
+                return true;
+            },
+
+            getPlotSelection(coordinates) {
+                return PlotSelection.make({
+                    x: {from: coordinates.x, range: false},
+                    y: {from: coordinates.y, range: false},
+                    value: 20
+                });
+            },
+
+            handleClick({ coordinates }) {
+                this.$log.debug('Received click event');
+
+                if (this.canPerformClickActions(coordinates)) {
+
+                    this.$log.debug('Handling click event');
+                    this.$log.debug(`clicked coordinates: ${JSON.stringify(coordinates)}`);
+                    this.$bus.$emit('canvas-click-event', { coordinates });
+
+                }
+            }
         }
+
     };
 
     export default ModelCanvas;

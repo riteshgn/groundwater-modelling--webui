@@ -39,8 +39,16 @@ const store = {
         // array of class core/PlotSelection defining the head selections
         constantHeads: [],
 
+        // configuration for constant head selection which will not be
+        // added to constant heads - hence not included in final simulation
+        constantHeadsForPreview: null,
+
         // array of class core/PlotSelection defining the well selections
         wells: [],
+
+        // configuration for wells selection which will not be
+        // added to wells - hence not included in final simulation
+        wellsForPreview: null,
 
         // value of the selection made on the canvas
         canvasSelectionValue: null,
@@ -72,7 +80,9 @@ const store = {
 
     mutations: {
         ADD_CONSTANT_HEAD_CONFIG,
+        ADD_CONSTANT_HEAD_CONFIG_FOR_PREVIEW,
         ADD_WELLS_CONFIG,
+        ADD_WELLS_CONFIG_FOR_PREVIEW,
         CHANGE_SIMULATION_STATE,
         HIDE_OUTPUT,
         REMOVE_CONSTANT_HEAD_CONFIG,
@@ -120,11 +130,29 @@ function stringifiedWells(state) {
 }
 
 function constantHeadsSelection(state) {
-    return PlotUtils.processSelections(state.constantHeads);
+    const mainSelection = PlotUtils.convertPlotSelectionToPlotlyData(state.constantHeads);
+
+    if (state.constantHeadsForPreview !== null) {
+        const previewSelection = PlotUtils.convertPlotSelectionToPlotlyData([state.constantHeadsForPreview]);
+        mainSelection.x = mainSelection.x.concat(previewSelection.x);
+        mainSelection.y = mainSelection.y.concat(previewSelection.y);
+        mainSelection.values = mainSelection.values.concat(previewSelection.values);
+    }
+
+    return mainSelection;
 }
 
 function wellsSelection(state) {
-    return PlotUtils.processSelections(state.wells);
+    const mainSelection = PlotUtils.convertPlotSelectionToPlotlyData(state.wells);
+
+    if (state.wellsForPreview !== null) {
+        const previewSelection = PlotUtils.convertPlotSelectionToPlotlyData([state.wellsForPreview]);
+        mainSelection.x = mainSelection.x.concat(previewSelection.x);
+        mainSelection.y = mainSelection.y.concat(previewSelection.y);
+        mainSelection.values = mainSelection.values.concat(previewSelection.values);
+    }
+
+    return mainSelection;
 }
 
 function basicConfigReady(state) {
@@ -165,6 +193,11 @@ function canvasTitles(state) {
 
 function ADD_CONSTANT_HEAD_CONFIG(state, plotSelection) {
     state.constantHeads.push(plotSelection);
+    state.constantHeadsForPreview = null;
+}
+
+function ADD_CONSTANT_HEAD_CONFIG_FOR_PREVIEW(state, plotSelection) {
+    state.constantHeadsForPreview = plotSelection;
 }
 
 function REMOVE_CONSTANT_HEAD_CONFIG(state, srNo) {
@@ -176,6 +209,11 @@ function REMOVE_CONSTANT_HEAD_CONFIG(state, srNo) {
 
 function ADD_WELLS_CONFIG(state, plotSelection) {
     state.wells.push(plotSelection);
+    state.wellsForPreview = null;
+}
+
+function ADD_WELLS_CONFIG_FOR_PREVIEW(state, plotSelection) {
+    state.wellsForPreview = plotSelection;
 }
 
 function REMOVE_WELLS_CONFIG(state, srNo) {
@@ -263,10 +301,12 @@ function RESET_MODEL_CONFIG_BASIC(state) {
 
 function RESET_MODEL_CONFIG_CONSTANT_HEADS(state) {
     state.constantHeads.splice(0);
+    state.constantHeadsForPreview = null;
 }
 
 function RESET_MODEL_CONFIG_WELLS(state) {
     state.wells.splice(0);
+    state.wellsForPreview = null;
 }
 
 //////////////////////////////////////////////////////////////////////

@@ -129,7 +129,6 @@
             },
 
             selectTab(tabId) {
-                this.$log.debug(`Switching the tab to ${tabId}`);
                 for (let type in this.tabSelections) {
                     this.tabSelections[type] = type === tabId;
                 }
@@ -138,6 +137,8 @@
 
         mounted() {
             this.selectTab('basic');
+            this.$log.debug(
+                'InputRowModelConfig.vue | mounted | registering callback to app-start-modelling event...');
             this.$bus.$on('app-start-modelling', () => this.selectTab('basic'));
         }
 
