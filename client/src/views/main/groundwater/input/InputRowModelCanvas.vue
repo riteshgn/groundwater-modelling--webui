@@ -4,13 +4,15 @@
 
         <!-- Card header -->
         <card-header class="text-center">
-            <i class="fa fa-bar-chart ml-2"></i>
+            <i class="fa fa-area-chart ml-2" aria-hidden="true"></i>
             Canvas
         </card-header>
         <!-- /.Card header -->
 
         <!--Card content-->
         <card-body>
+            <canvas-summary :show-selection-flag="true"></canvas-summary>
+
             <plotly-graph
                 :traces="traces"
                 :layout="layout"
@@ -28,6 +30,7 @@
     import { Card, CardBody, CardHeader } from 'mdbvue';
 
     import PlotlyGraph from '../../../../components/PlotlyGraph.vue';
+    import CanvasSummary from './InputRowModelCanvasSummary';
 
     import CanvasHelper from '../canvas_helper';
 
@@ -45,6 +48,7 @@
             Card,
             CardBody,
             CardHeader,
+            CanvasSummary,
             PlotlyGraph
         },
 
@@ -55,7 +59,6 @@
 
             layout() {
                 const layout = Object.assign({}, CanvasHelper.layoutInput);
-                layout.title = this.canvasTitles.mainTitle
                 layout.xaxis.title = this.canvasTitles.xAxisTitle;
                 layout.yaxis.title = this.canvasTitles.yAxisTitle;
 

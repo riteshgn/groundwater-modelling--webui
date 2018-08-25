@@ -187,7 +187,7 @@
                     { id: 'sand', name: 'Sand', selected: false  },
                     { id: 'silt', name: 'Silt', selected: false  },
                     { id: 'clay', name: 'Clay', selected: false  },
-                    { id: 'random', name: 'Randomize', selected: false  }
+                    { id: 'random', name: 'Randomized', selected: false  }
                 ]
             }
         },

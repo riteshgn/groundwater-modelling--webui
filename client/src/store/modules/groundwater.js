@@ -69,6 +69,7 @@ const store = {
 
     getters: {
         basicConfigReady,
+        canvasSummary,
         canvasTitles,
         constantHeadsReady,
         constantHeadsSelection,
@@ -170,6 +171,28 @@ function constantHeadsReady(state) {
 
 function wellsReady(state) {
     return state.wells.length > 0;
+}
+
+function canvasSummary(state) {
+    const view = state.modelLayout === 'map' ? 'Map' : 'Cross Section';
+    const rechargeRate = (state.recharge.volume / state.recharge.days);
+
+    const soilTypes = {
+        gravel: 'Gravel',
+        sand: 'Sand',
+        silt: 'Silt',
+        clay: 'Clay',
+        random: 'Randomized'
+    };
+
+    return {
+        layout: view,
+        height: `${(state.row.count * state.row.width)}m`,
+        width: `${(state.column.count * state.column.width)}m`,
+        thickness: `${(state.gridThickness)}m`,
+        soil: soilTypes[state.soilType],
+        rechargeRate: `${rechargeRate.toExponential(3)}`
+    }
 }
 
 function canvasTitles(state) {

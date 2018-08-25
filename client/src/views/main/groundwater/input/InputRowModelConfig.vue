@@ -4,7 +4,7 @@
 
         <!-- Card header -->
         <card-header class="text-center">
-            <i class="fa fa-cog ml-2"></i>
+            <i class="fa fa-cog ml-2" aria-hidden="true"></i>
             Configure Model
         </card-header>
         <!-- /.Card header -->

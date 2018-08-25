@@ -4,12 +4,15 @@
 
         <!-- Card header -->
         <card-header class="text-center">
+            <i class="fa fa-hand-spock-o ml-2" aria-hidden="true"></i>
             Heads
         </card-header>
         <!-- /.Card header -->
 
         <!--Card content-->
         <card-body>
+            <canvas-summary></canvas-summary>
+
             <plotly-graph
                 :traces="traces"
                 :layout="layout"></plotly-graph>
@@ -26,6 +29,7 @@
     import { Card, CardBody, CardHeader } from 'mdbvue';
 
     import PlotlyGraph from '../../../../components/PlotlyGraph.vue';
+    import CanvasSummary from '../input/InputRowModelCanvasSummary';
 
     import CanvasHelper from '../canvas_helper';
 
@@ -43,6 +47,7 @@
             Card,
             CardBody,
             CardHeader,
+            CanvasSummary,
             PlotlyGraph
         },
 
@@ -53,7 +58,6 @@
 
             layout() {
                 const layout = Object.assign({}, CanvasHelper.layoutOutput);
-                layout.title = this.canvasTitles.mainTitle
                 layout.xaxis.title = this.canvasTitles.xAxisTitle;
                 layout.yaxis.title = this.canvasTitles.yAxisTitle;
 
