@@ -93,20 +93,24 @@
             ...mapState('app', ['tabSelection']),
             ...mapGetters('groundwater', ['basicConfigReady', 'constantHeadsReady', 'wellsReady']),
 
+            eitherHeadsOrWellsIsReady() {
+                return this.constantHeadsReady || this.wellsReady;
+            },
+
             pillNameBasic() {
                 return 'Basic' + this.requiredIcon(this.basicConfigReady);
             },
 
             pillNameConstantHeads() {
-                return 'Constant Heads' + this.requiredIcon(this.constantHeadsReady);
+                return 'Constant Heads' + this.requiredIcon(this.eitherHeadsOrWellsIsReady);
             },
 
             pillNameWells() {
-                return 'Wells' + this.requiredIcon(this.wellsReady);
+                return 'Wells' + this.requiredIcon(this.eitherHeadsOrWellsIsReady);
             },
 
             allReady() {
-                return this.basicConfigReady && this.constantHeadsReady && this.wellsReady;
+                return this.basicConfigReady && this.eitherHeadsOrWellsIsReady;
             }
         },
 

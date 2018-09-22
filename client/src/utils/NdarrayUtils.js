@@ -62,10 +62,11 @@ function toArray(ndarr, shape)
 }
 
 function nanMean(arr) {
-    return __mean(
-        flatten(arr)
-            .filter((elem) => !isNaN(elem))
-    );
+    const oneDimArr = flatten(arr).filter((elem) => !isNaN(elem));
+    if (oneDimArr.length) {
+        return __mean(oneDimArr);
+    }
+    return 0;
 }
 
 function ceilNDArrElems(arr) {
