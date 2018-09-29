@@ -1,0 +1,56 @@
+Instructions to build & maintain this project
+========================================================================================
+1. Install npm (node package manager)
+    - https://www.npmjs.com/get-npm
+    - Recommended: use a node version manager like https://github.com/creationix/nvm
+
+2. Project layout
+    - client/src
+        @ This will contain all the application specific javascript code
+        @ The starting point for the code will be 'app.js'
+        @ All corresponding code should be modularized and organized into logical folders.
+        @ ES2015 modules must be used to import/export them.
+          https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
+          https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export
+
+    - public
+        @ This is the final distribution which should be deployed on required environment.
+        @ It will contain the index page for the SPA.
+        @ It will also contain folders for js, css, fonts and images.
+        @ For most parts, apart from images, contents in all other folders will be generated using webpack.
+
+    - package.json
+        @ All client-side dependencies for this project are pulled from the npm repository
+          https://www.npmjs.com/
+        @ This file contains all dependencies with the 'exact' version used during development.
+          Make sure that this file is always up-to-date.
+        @ When installing new dependencies using npm make sure to use the '--save' & '--save-exact' flags
+        @ When installing a new development-only dependency make sure to use the '--save-dev' flag
+        @ The 'scripts' configuration in the package.json will contain the scripts to build the
+          production and development distributions for this project.
+          It may also be extended in the future to start-up the dev/production web server.
+
+    - webpack.config.json
+        @ See https://webpack.js.org/concepts/
+
+3. Material Design Bootstrap is used for the design of this project.
+   More details can be found here: https://mdbootstrap.com/vue
+
+4. Building the distribution
+    - Assumption: npm has been installed
+    - Run
+        npm install
+    - Run
+        Development : npm run build:dev
+        Production  : npm run build
+
+5. Seeing it in action
+    - Serve the 'public' folder using any webserver
+    - example:
+        cd public/
+        python -m SimpleHttpSevrer 8080
+            OR
+        http-server -p 8080 (https://www.npmjs.com/package/http-server)
+
+
+
