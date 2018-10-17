@@ -32,7 +32,8 @@ const connectivity_y = 1;
 // Exposed APIs
 const apis = {
     convertPlotSelectionToPlotlyData,
-    prepare
+    prepare,
+    hydrualicConductivity
 }
 
 export default apis;
@@ -97,6 +98,10 @@ function convertPlotSelectionToPlotlyData(plotSelections) {
             .map(_extrapolatePoints)
             .reduce(_concatExtrapolation, {x: [], y: [], values: []})
     );
+}
+
+function hydrualicConductivity(soilType) {
+    return HYDRUALIC_CONDUCTIVITY[soilType] || -1;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////

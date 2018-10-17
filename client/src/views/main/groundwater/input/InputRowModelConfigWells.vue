@@ -9,7 +9,8 @@
         <new-canvas-selection
             tab-name="wells"
             @save-config="saveConfig"
-            @preview-config="previewConfig"></new-canvas-selection>
+            @preview-config="previewConfig"
+            @clear-preview="clearPreview"></new-canvas-selection>
     </form>
     <!-- Default horizontal form -->
 </template>
@@ -49,7 +50,8 @@
             ...mapMutations({
                 removeConfig: 'groundwater/REMOVE_WELLS_CONFIG',
                 saveConfig: 'groundwater/ADD_WELLS_CONFIG',
-                previewConfig: 'groundwater/ADD_WELLS_CONFIG_FOR_PREVIEW'
+                previewConfig: 'groundwater/ADD_WELLS_CONFIG_FOR_PREVIEW',
+                clearPreview: 'groundwater/CLEAR_WELLS_CONFIG_PREVIEW'
             }),
 
             randomize() {

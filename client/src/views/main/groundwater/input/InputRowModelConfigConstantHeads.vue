@@ -9,7 +9,8 @@
         <new-canvas-selection
             tab-name="heads"
             @save-config="saveConfig"
-            @preview-config="previewConfig"></new-canvas-selection>
+            @preview-config="previewConfig"
+            @clear-preview="clearPreview"></new-canvas-selection>
     </form>
     <!-- Default horizontal form -->
 </template>
@@ -50,7 +51,8 @@
             ...mapMutations({
                 removeConfig: 'groundwater/REMOVE_CONSTANT_HEAD_CONFIG',
                 saveConfig: 'groundwater/ADD_CONSTANT_HEAD_CONFIG',
-                previewConfig: 'groundwater/ADD_CONSTANT_HEAD_CONFIG_FOR_PREVIEW'
+                previewConfig: 'groundwater/ADD_CONSTANT_HEAD_CONFIG_FOR_PREVIEW',
+                clearPreview: 'groundwater/CLEAR_CONSTANT_HEAD_CONFIG_PREVIEW'
             }),
 
             randomize() {

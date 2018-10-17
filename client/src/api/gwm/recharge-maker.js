@@ -25,7 +25,7 @@ export default function(rch_rate,cross_section_bool,sizer,cellarea) {
         // top row (row=0) is assigned recharge rate
         for (let col=0; col<sizer[1]; col++) {
             // assign recharge rate to only cells in row 1
-            R[0][col]=rch_rate;
+            R[sizer[1]-1][col]=rch_rate;
         }
     }  else {
         // otherwise, it's map view, so all cells assigned recharge rate

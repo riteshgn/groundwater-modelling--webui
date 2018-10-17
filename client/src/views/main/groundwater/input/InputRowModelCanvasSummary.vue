@@ -1,25 +1,30 @@
 <template>
     <div class="d-md-flex align-content-md-between flex-md-wrap mx-md-3">
-        <div class="px-md-2 flex-md-fill canvas-summary--content">
+        <div class="px-md-2 justify-content-start canvas-summary--content">
             Layout: <strong>{{ canvasSummary.layout }}</strong>
         </div>
-        <div class="px-md-2 flex-md-fill canvas-summary--content">
+        <div class="px-md-2 justify-content-start canvas-summary--content">
             Height: <strong>{{ canvasSummary.height }}</strong>
         </div>
-        <div class="px-md-2 flex-md-fill canvas-summary--content">
+        <div class="px-md-2 justify-content-start canvas-summary--content">
             Width: <strong>{{ canvasSummary.width }}</strong>
         </div>
-        <div class="px-md-2 flex-md-fill canvas-summary--content">
+        <div class="px-md-2 justify-content-start canvas-summary--content">
             Thickness: <strong>{{ canvasSummary.thickness }}</strong>
         </div>
-        <div class="px-md-2 flex-md-fill canvas-summary--content">
-            Soil: <strong>{{ canvasSummary.soil }}</strong>
+        <div class="px-md-2 justify-content-start canvas-summary--content">
+            Sediment: <strong>{{ canvasSummary.soil }}</strong>
         </div>
-        <div class="px-md-2 flex-md-fill canvas-summary--content">
+        <div
+            class="px-md-2 justify-content-start canvas-summary--content"
+            v-if="canvasSummary.kValue">
+            (K = <strong>{{ canvasSummary.kValue }}</strong>)
+        </div>
+        <div class="px-md-2 justify-content-start canvas-summary--content">
             <abbr title="Recharge Rate">RR</abbr>: <strong>{{ canvasSummary.rechargeRate }}</strong>
         </div>
         <div
-            class="px-md-2 flex-md-fill canvas-summary--content"
+            class="px-md-2 justify-content-start canvas-summary--content"
             v-if="showSelectionFlag">
             Selection: <strong :class="{'selection-off': !editableCanvas}">{{ selection }}</strong>
         </div>

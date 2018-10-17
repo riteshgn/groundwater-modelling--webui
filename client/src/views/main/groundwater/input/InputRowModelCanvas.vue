@@ -55,7 +55,7 @@
         computed: {
             ...mapState('app', ['editableCanvas', 'canvasSelectionType', 'tabSelection']),
             ...mapGetters('app', ['selectedConfigurationTab']),
-            ...mapGetters('groundwater', ['canvasTitles', 'constantHeadsSelection', 'wellsSelection']),
+            ...mapGetters('groundwater', ['canvasTitles', 'constantHeadsSelection', 'wellsSelection', 'rechargeSelection']),
 
             layout() {
                 const layout = Object.assign({}, CanvasHelper.layoutInput);
@@ -73,8 +73,12 @@
                 return Object.assign({}, this.wellsTrace, this.wellsSelection);
             },
 
+            recharge() {
+                return Object.assign({}, this.rechargeTrace, this.rechargeSelection);
+            },
+
             traces() {
-                return [this.rechargeTrace, this.constantHeads, this.wells];
+                return [this.recharge, this.constantHeads, this.wells];
             }
         },
 

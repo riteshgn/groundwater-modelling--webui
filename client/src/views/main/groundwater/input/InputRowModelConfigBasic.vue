@@ -120,12 +120,13 @@
 
             <!-- Grid row -->
             <row>
-                <label for="recharge-volume" class="col-sm-3 col-form-label">Volume (m<sup>3</sup>)</label>
+                <label for="recharge-volume" class="col-sm-3 col-form-label">Length (m)</label>
                 <column sm="3">
                     <input
                         type="number"
                         class="form-control form-control-sm"
                         id="recharge-volume"
+                        step="0.01"
                         :value="recharge.volume"
                         @input="updateRechargeVolume(parseFloat($event.target.value))">
                 </column>
@@ -148,7 +149,7 @@
 
             <!-- Grid row -->
             <row class="form-group">
-                <label for="soil-type" class="col-sm-3 col-form-label">Soil Type</label>
+                <label for="soil-type" class="col-sm-3 col-form-label">Sediment Type</label>
                 <column sm="9">
                     <select
                         name="soil-type"

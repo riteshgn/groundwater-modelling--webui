@@ -1,7 +1,5 @@
 'use strict';
 
-import range from 'lodash/range';
-
 const traces = {
     EMPTY_CONSTANT_HEADS: {
         name: 'C. Head',
@@ -38,8 +36,8 @@ const traces = {
         name: 'Recharge',
         type: 'scatter',
         mode: 'markers',
-        x: range(0, 50),
-        y: Array(50).fill(50),
+        x: [],
+        y: [],
         marker: {size: 9, color: 'e0f400'}
     }
 }

@@ -91,7 +91,10 @@
 
         computed: {
             ...mapState('app', ['tabSelection']),
-            ...mapGetters('groundwater', ['basicConfigReady', 'constantHeadsReady', 'wellsReady']),
+            ...mapGetters('groundwater', [
+                'basicConfigReady', 'constantHeadsReady', 'wellsReady',
+                'previewConfigForConstantHeadExists', 'previewConfigForWellsExists'
+            ]),
 
             eitherHeadsOrWellsIsReady() {
                 return this.constantHeadsReady || this.wellsReady;
@@ -121,9 +124,32 @@
                 'SET_TAB_SELECTION_WELLS'
             ]),
 
+            getGoodToGo() {
+                let goodToGo = true;
+
+                if (this.previewConfigForConstantHeadExists) {
+                    alert('Configuration has unsaved changes for Constant Heads. Please SAVE or RESET the selection before running simulation.');
+                    goodToGo = false;
+                }
+
+                if (this.previewConfigForWellsExists) {
+                    alert('Configuration has unsaved changes for Wells. Please SAVE or RESET the selection before running simulation.');
+                    goodToGo = false;
+                }
+
+                return goodToGo;
+            },
+
             async simulate() {
-                await this.$store.dispatch('groundwater/simulate');
-                this.$bus.$emit('app-display-output', {sender: 'InputRowModelConfig.vue'});
+                if (this.getGoodToGo()) {
+                    await this.$store.dispatch('groundwater/simulate');
+                    this.$log.debug('Telling everyone that output is ready');
+                    this.$bus.$emit('app-display-output', {sender: 'InputRowModelConfig.vue'});
+                } else {
+                    // DOES NOTHING. Simply done to ensure consistent behavior (i.e. async) in
+                    // both truthy and falsy conditions.
+                    await Promise.resolve(false);
+                }
             },
 
             requiredIcon(ready = false) {

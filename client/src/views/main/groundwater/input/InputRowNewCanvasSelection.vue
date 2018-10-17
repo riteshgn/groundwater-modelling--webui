@@ -174,6 +174,12 @@
             </row>
             <!-- Grid row -->
 
+            <!-- Grid row -->
+            <row v-if="tabName === 'wells'">
+                <p class="value-definitions-wells"><em>Negative values represent <strong>Extraction wells</strong></em></p>
+                <p class="value-definitions-wells"><em>Positive values represent <strong>Recharge wells</strong></em></p>
+            </row>
+            <!-- Grid row -->
         </fieldset>
     </form>
 </template>
@@ -265,6 +271,7 @@
                 this.$v.$reset();
                 this.selectionOne = null;
                 this.updateCanvasSelectionType('POINT');
+                this.$emit('clear-preview');
             },
 
             saveConfig() {
@@ -364,5 +371,11 @@
 <style scoped>
     .enable-check-box-label {
         margin-bottom: 0.5rem;
+    }
+
+    .value-definitions-wells {
+        font-size: 0.75rem;
+        margin-left: 0.9rem;
+        color: #6F777D;
     }
 </style>

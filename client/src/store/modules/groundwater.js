@@ -1,5 +1,7 @@
 'use strict';
 
+import range from 'lodash/range';
+
 import PlotUtils from '../../utils/PlotUtils';
 
 const DEFAULTS = {
@@ -8,7 +10,11 @@ const DEFAULTS = {
     gridThickness: 100,
     recharge: { volume: .3, days: 365 },
     soilType: 'random',
-    modelLayout: 'map'
+    modelLayout: 'map',
+    rechargeForCrossSection: {
+        x: range(0, 50), // should change from constant to rowCount
+        y: Array(50).fill(50) // should change from constant to columnCount and fill value to rowCount
+    }
 }
 
 const store = {
@@ -73,6 +79,9 @@ const store = {
         canvasTitles,
         constantHeadsReady,
         constantHeadsSelection,
+        previewConfigForConstantHeadExists,
+        previewConfigForWellsExists,
+        rechargeSelection,
         stringifiedHeads,
         stringifiedWells,
         wellsReady,
@@ -85,6 +94,8 @@ const store = {
         ADD_WELLS_CONFIG,
         ADD_WELLS_CONFIG_FOR_PREVIEW,
         CHANGE_SIMULATION_STATE,
+        CLEAR_CONSTANT_HEAD_CONFIG_PREVIEW,
+        CLEAR_WELLS_CONFIG_PREVIEW,
         HIDE_OUTPUT,
         REMOVE_CONSTANT_HEAD_CONFIG,
         REMOVE_WELLS_CONFIG,
@@ -185,7 +196,7 @@ function canvasSummary(state) {
         random: 'Randomized'
     };
 
-    return {
+    const summary = {
         layout: view,
         height: `${(state.row.count * state.row.width)}m`,
         width: `${(state.column.count * state.column.width)}m`,
@@ -193,6 +204,12 @@ function canvasSummary(state) {
         soil: soilTypes[state.soilType],
         rechargeRate: `${rechargeRate.toExponential(3)}`
     }
+
+    if (state.soilType !== 'random') {
+        summary.kValue = PlotUtils.hydrualicConductivity(state.soilType).toExponential(3);
+    }
+
+    return summary;
 }
 
 function canvasTitles(state) {
@@ -212,15 +229,35 @@ function canvasTitles(state) {
     return { mainTitle, xAxisTitle, yAxisTitle };
 }
 
+function previewConfigForConstantHeadExists(state) {
+    return state.constantHeadsForPreview !== null;
+}
+
+function previewConfigForWellsExists(state) {
+    return state.wellsForPreview !== null;
+}
+
+function rechargeSelection(state) {
+    if (state.modelLayout === 'map') {
+        return {x: [], y: []};
+    }
+
+    return DEFAULTS.rechargeForCrossSection;
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 function ADD_CONSTANT_HEAD_CONFIG(state, plotSelection) {
+    CLEAR_CONSTANT_HEAD_CONFIG_PREVIEW(state);
     state.constantHeads.push(plotSelection);
-    state.constantHeadsForPreview = null;
 }
 
 function ADD_CONSTANT_HEAD_CONFIG_FOR_PREVIEW(state, plotSelection) {
     state.constantHeadsForPreview = plotSelection;
+}
+
+function CLEAR_CONSTANT_HEAD_CONFIG_PREVIEW(state) {
+    state.constantHeadsForPreview = null;
 }
 
 function REMOVE_CONSTANT_HEAD_CONFIG(state, srNo) {
@@ -231,12 +268,16 @@ function REMOVE_CONSTANT_HEAD_CONFIG(state, srNo) {
 }
 
 function ADD_WELLS_CONFIG(state, plotSelection) {
+    CLEAR_WELLS_CONFIG_PREVIEW(state);
     state.wells.push(plotSelection);
-    state.wellsForPreview = null;
 }
 
 function ADD_WELLS_CONFIG_FOR_PREVIEW(state, plotSelection) {
     state.wellsForPreview = plotSelection;
+}
+
+function CLEAR_WELLS_CONFIG_PREVIEW(state) {
+    state.wellsForPreview = null;
 }
 
 function REMOVE_WELLS_CONFIG(state, srNo) {
