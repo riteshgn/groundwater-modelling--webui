@@ -102,14 +102,14 @@
 
         if (d3Event.pageX || d3Event.pageY) {
             // that.$log.debug(`Found pageX / pageY => ${d3Event.pageX}, ${d3Event.pageY}`);
-            return {posX: d3Event.pageX, posY: d3Event.pageY};
+            return {posX: d3Event.pageX, posY: d3Event.pageY, addOffsets: true};
         }
 
         if (d3Event.clientX || d3Event.clientY)     {
             const posX = d3Event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
             const posY = d3Event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
             // that.$log.debug(`Found clientX / clientY => ${posX}, ${posY}`);
-            return {posX, posY};
+            return {posX, posY, addOffsets: true};
         }
 
         that.$log.error("Could not compute mouse click coordindates");
@@ -139,7 +139,7 @@
             return errorOutput;
         }
 
-        const {posX, posY} = _clickPoints(that, d3Event);
+        const {posX, posY, addOffsets} = _clickPoints(that, d3Event);
 
         // bg is the 'rect' svg component which is the background of the grid
         const bg = plotlyContainer.getElementsByClassName('bg')[0];
@@ -151,13 +151,20 @@
         const xAxisRange = plotlyContainer.layout.xaxis.range;
         const yAxisRange = plotlyContainer.layout.yaxis.range;
 
+        // offsets are selected based on trial and error
+        // need to figure out if they work in a responsive environment
+        const offsets = {
+            x: addOffsets ? -83.5 : 0,
+            y: addOffsets ? 110 : -0.5
+        }
+
         // Get clicked x
         const x = Math.ceil(
-            ((posX - bg.attributes['x'].value) / (bg.attributes['width'].value)) * (xAxisRange[1] - xAxisRange[0]) + xAxisRange[0]
+            ((posX - bg.attributes['x'].value) / (bg.attributes['width'].value)) * (xAxisRange[1] - xAxisRange[0]) + xAxisRange[0] + offsets.x
         );
         // Get clicked y
         const y = Math.ceil(
-            ((posY - bg.attributes['y'].value) / (bg.attributes['height'].value)) * (yAxisRange[0] - yAxisRange[1]) + yAxisRange[1]
+            ((posY - bg.attributes['y'].value) / (bg.attributes['height'].value)) * (yAxisRange[0] - yAxisRange[1]) + yAxisRange[1] + offsets.y
         );
 
         // that.$log.debug(`Computed x: ${x}, y: ${y}`);
