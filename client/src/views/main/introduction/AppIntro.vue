@@ -30,7 +30,7 @@
 
                 <p class="text-justify">Numerical groundwater models have become one of the most commonly used and important groundwater tools over the last half century. This has given experienced groundwater modelers increased control and power to answer a wide range of questions. However, complex models and interfaces are difficult for novices to learn.</p>
 
-                <p class="text-justify">The Simple Online Groundwater Model (SOGWaM) is built for budding hydro geology enthusiasts. It allows you to simulate and visualize groundwater flow, and to understand how system changes affect the flow field by developing and testing hypotheses.</p>
+                <p class="text-justify">The Simple Online Groundwater Model (SOGWaM) is built for budding hydrogeology enthusiasts. It allows you to simulate and visualize groundwater flow, and to understand how system changes affect the flow field by developing and testing hypotheses.</p>
 
                 <p class="text-justify">Happy Learning !</p>
 
@@ -50,7 +50,7 @@
                     Clicking the "Start Modelling" button will make the groundwater-model configuration section visibile and the main view will automatically scroll to the model configuration section.
                 </div>
 
-                <btn
+                <!-- <btn
                     color="info"
                     size="md"
                     :tabindex="tabIndexForButtons"
@@ -62,7 +62,7 @@
                     id="descriptionStartTutorial"
                     class="sr-only">
                     Clicking the "New User" button will make launch the usage guide for this system.
-                </div>
+                </div> -->
                 <!-- Do more buttons -->
 
             </column>

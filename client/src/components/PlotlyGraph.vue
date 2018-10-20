@@ -92,6 +92,31 @@
     }
 
     /**
+     * Fetches the mouse click coordindates using the available co-ordinate API
+     */
+    function _clickPoints(that, d3Event) {
+        if (d3Event.layerX || d3Event.layerY) {
+            // that.$log.debug(`Found layerX / layerY => ${d3Event.layerX}, ${d3Event.layerY}`);
+            return {posX: d3Event.layerX, posY: d3Event.layerY};
+        }
+
+        if (d3Event.pageX || d3Event.pageY) {
+            // that.$log.debug(`Found pageX / pageY => ${d3Event.pageX}, ${d3Event.pageY}`);
+            return {posX: d3Event.pageX, posY: d3Event.pageY};
+        }
+
+        if (d3Event.clientX || d3Event.clientY)     {
+            const posX = d3Event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            const posY = d3Event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+            // that.$log.debug(`Found clientX / clientY => ${posX}, ${posY}`);
+            return {posX, posY};
+        }
+
+        that.$log.error("Could not compute mouse click coordindates");
+        return {posX: 0, posY: 0};
+    }
+
+    /**
      * The clicked coordinates need to be computed by doing some math on the
      * underlying layers created by d3.
      *
@@ -114,6 +139,8 @@
             return errorOutput;
         }
 
+        const {posX, posY} = _clickPoints(that, d3Event);
+
         // bg is the 'rect' svg component which is the background of the grid
         const bg = plotlyContainer.getElementsByClassName('bg')[0];
         if (bg === undefined || bg === null) {
@@ -126,12 +153,14 @@
 
         // Get clicked x
         const x = Math.ceil(
-            ((d3Event.layerX - bg.attributes['x'].value + 4) / (bg.attributes['width'].value)) * (xAxisRange[1] - xAxisRange[0]) + xAxisRange[0]
+            ((posX - bg.attributes['x'].value) / (bg.attributes['width'].value)) * (xAxisRange[1] - xAxisRange[0]) + xAxisRange[0]
         );
         // Get clicked y
         const y = Math.ceil(
-            ((d3Event.layerY - bg.attributes['y'].value + 4) / (bg.attributes['height'].value)) * (yAxisRange[0] - yAxisRange[1]) + yAxisRange[1]
+            ((posY - bg.attributes['y'].value) / (bg.attributes['height'].value)) * (yAxisRange[0] - yAxisRange[1]) + yAxisRange[1]
         );
+
+        // that.$log.debug(`Computed x: ${x}, y: ${y}`);
 
         // ensure range bounds
         const cleanX = _cleanse(x, xAxisRange);
